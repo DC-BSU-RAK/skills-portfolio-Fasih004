@@ -11,7 +11,7 @@ The difficulty levels determine the number of digits in the numbers to be added 
 
     45 + 9 =
     34 - 88 =
-    etc
+    etc  
 
 For each problem presented, the user is given a chance to answer. If the answer is correct, another problem is presented. If the answer is wrong, the user is to be given one more chance at that problem. The program should keep a tally of the users score, awarding 10 points for a correct answer on first attempt and 5 points on the second attempt. You should implement a random number generator (see the resources folder) to determine:
 - The values to be added or subtracted
