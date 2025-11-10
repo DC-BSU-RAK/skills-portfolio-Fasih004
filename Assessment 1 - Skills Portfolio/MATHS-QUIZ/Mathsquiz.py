@@ -46,7 +46,7 @@ game = {
 
 # --- ASSET PATHS ---
 IMAGE_ASSET_LIST = {
-    'play_button': ('MATHS-QUIZ/assets/buttons/play_btn.png', (100, 50)), 
+    'play_button': ('assets/buttons/play_btn.png', (100, 50)), 
     'instructions_button': ('assets/buttons/instructions_btn.png', (40, 40)),
     'quit_button_home': ('assets/buttons/quit_btn.png', (40, 40)),
     'easy_button': ('assets/buttons/easy_btn.png', (100, 80)),
