@@ -46,7 +46,7 @@ game = {
 
 # --- ASSET PATHS ---
 IMAGE_ASSET_LIST = {
-    'play_button': ('buttons/play_btn.png', (100, 50)), 
+    'play_button': ('assets/buttons/play_btn.png', (100, 50)), 
     'instructions_button': ('assets/buttons/instructions_btn.png', (40, 40)),
     'quit_button_home': ('assets/buttons/quit_btn.png', (40, 40)),
     'easy_button': ('assets/buttons/easy_btn.png', (100, 80)),
@@ -77,7 +77,7 @@ AUDIO_ASSET_PATHS = {
 }
 
 BACKGROUND_PATHS = {
-    'home': 'backgrounds/home_bg.gif', 
+    'home': 'assets/backgrounds/home_bg.gif', 
     'menu': 'assets/backgrounds/menu_bg.gif', 
     'easy': 'assets/backgrounds/home_bg.gif',
     'medium': 'assets/backgrounds/menu_bg.gif',
