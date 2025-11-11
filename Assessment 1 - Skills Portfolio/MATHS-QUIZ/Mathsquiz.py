@@ -46,44 +46,44 @@ game = {
 
 # --- ASSET PATHS ---
 IMAGE_ASSET_LIST = {
-    'play_button': ('assets/buttons/play_btn.png', (100, 50)), 
-    'instructions_button': ('assets/buttons/instructions_btn.png', (40, 40)),
-    'quit_button_home': ('assets/buttons/quit_btn.png', (40, 40)),
-    'easy_button': ('assets/buttons/easy_btn.png', (100, 80)),
-    'medium_button': ('assets/buttons/medium_btn.png', (100, 80)),
-    'hard_button': ('assets/buttons/hard_btn.png', (100, 80)),
-    'submit_button': ('assets/buttons/submit_btn.png', (140, 60)),
-    'quit_button_q': ('assets/buttons/quit_btn.png', (40, 40)),
-    'return_button': ('assets/buttons/return_btn.png', (40, 40)),
-    'play_again_button': ('assets/buttons/replay_btn.png', (40, 40)),
-    'home_title_img': ('assets/ui/title.png', (350, 100)),
-    'menu_title': ('assets/ui/title.png', (240, 50)),
-    'card_frame': ('assets/ui/card_frame.png', (380, 290)),
-    'record_frame': ('assets/ui/record_frame.png', (400, 100)),
-    'instructions_label': ('assets/ui/Instructions.png', (400, 550)),
-    'result_box': ('assets/ui/card_box.png', (450, 550)),
+    'play_button': (r"C:\\Users\\fasih\\Documents\\GitHub\\skills-portfolio-Fasih004\\Assessment 1 - Skills Portfolio\\MATHS-QUIZ\\assets\\buttons\\play_btn.png", (100, 50)),
+    'instructions_button': (r"C:\\Users\\fasih\\Documents\\GitHub\\skills-portfolio-Fasih004\\Assessment 1 - Skills Portfolio\\MATHS-QUIZ\\assets\\buttons\\instructions_btn.png", (40, 40)),
+    'quit_button_home': (r"C:\\Users\\fasih\\Documents\\GitHub\\skills-portfolio-Fasih004\\Assessment 1 - Skills Portfolio\\MATHS-QUIZ\\assets\\buttons\\quit_btn.png", (40, 40)),
+    'easy_button': (r"C:\\Users\\fasih\\Documents\\GitHub\\skills-portfolio-Fasih004\\Assessment 1 - Skills Portfolio\\MATHS-QUIZ\\assets\\buttons\\easy_btn.png", (100, 80)),
+    'medium_button': (r"C:\\Users\\fasih\\Documents\\GitHub\\skills-portfolio-Fasih004\\Assessment 1 - Skills Portfolio\\MATHS-QUIZ\\assets\\buttons\\medium_btn.png", (100, 80)),
+    'hard_button': (r"C:\\Users\\fasih\\Documents\\GitHub\\skills-portfolio-Fasih004\\Assessment 1 - Skills Portfolio\\MATHS-QUIZ\\assets\\buttons\\hard_btn.png", (100, 80)),
+    'submit_button': (r"C:\\Users\\fasih\\Documents\\GitHub\\skills-portfolio-Fasih004\\Assessment 1 - Skills Portfolio\\MATHS-QUIZ\\assets\\buttons\\submit_btn.png", (120, 50)),
+    'quit_button_q': (r"C:\\Users\\fasih\\Documents\\GitHub\\skills-portfolio-Fasih004\\Assessment 1 - Skills Portfolio\\MATHS-QUIZ\\assets\\buttons\\quit_btn.png", (40, 40)),
+    'return_button': (r"C:\\Users\\fasih\\Documents\\GitHub\\skills-portfolio-Fasih004\\Assessment 1 - Skills Portfolio\\MATHS-QUIZ\\assets\\buttons\\return_btn.png", (40, 40)),
+    'play_again_button': (r"C:\\Users\\fasih\\Documents\\GitHub\\skills-portfolio-Fasih004\\Assessment 1 - Skills Portfolio\\MATHS-QUIZ\\assets\\buttons\\replay_btn.png", (40, 40)),
+    'home_title_img': (r"C:\\Users\\fasih\\Documents\\GitHub\\skills-portfolio-Fasih004\\Assessment 1 - Skills Portfolio\\MATHS-QUIZ\\assets\\ui\\title.png", (400, 80)),
+    'menu_title': (r"C:\\Users\\fasih\\Documents\\GitHub\\skills-portfolio-Fasih004\\Assessment 1 - Skills Portfolio\\MATHS-QUIZ\\assets\\ui\\title.png", (400, 80)),
+    'card_frame': (r"C:\\Users\\fasih\\Documents\\GitHub\\skills-portfolio-Fasih004\\Assessment 1 - Skills Portfolio\\MATHS-QUIZ\\assets\\ui\\card_frame.png", (400, 300)),
+    'record_frame': (r"C:\\Users\\fasih\\Documents\\GitHub\\skills-portfolio-Fasih004\\Assessment 1 - Skills Portfolio\\MATHS-QUIZ\\assets\\ui\\record_frame.png", (400, 300)),
+    'instructions_label': (r"C:\\Users\\fasih\\Documents\\GitHub\\skills-portfolio-Fasih004\\Assessment 1 - Skills Portfolio\\MATHS-QUIZ\\assets\\ui\\instructions_label.png", (500, 600)),
+    'result_box': (r"C:\\Users\\fasih\\Documents\\GitHub\\skills-portfolio-Fasih004\\Assessment 1 - Skills Portfolio\\MATHS-QUIZ\\assets\\ui\\card_box.png", (450, 550)),
 }
 
 AUDIO_ASSET_PATHS = {
-    'home_music': 'assets/sounds/synthwave_menu.wav',
-    'easy_music': 'assets/sounds/8bit_easy.wav',
-    'medium_music': 'assets/sounds/8bit_moderate.wav',
-    'hard_music': 'assets/sounds/8bit_advanced.wav',
-    'victory_music': 'assets/sounds/win_fanfare.wav',
-    'defeat_music': 'assets/sounds/lose_jingle.wav',
-    'correct': 'assets/sounds/arcade_correct.wav',
-    'wrong': 'assets/sounds/arcade_wrong.wav',
-    'button_click': 'assets/sounds/button_click.wav'
+    'home_music': r"C:\\Users\\fasih\\Documents\\GitHub\\skills-portfolio-Fasih004\\Assessment 1 - Skills Portfolio\\MATHS-QUIZ\\assets\\sounds\\synthwave_menu.wav",
+    'easy_music': r"C:\\Users\\fasih\\Documents\\GitHub\\skills-portfolio-Fasih004\\Assessment 1 - Skills Portfolio\\MATHS-QUIZ\\assets\\8bit_easy.wav",
+    'medium_music': r"C:\\Users\\fasih\\Documents\\GitHub\\skills-portfolio-Fasih004\\Assessment 1 - Skills Portfolio\\MATHS-QUIZ\\assets\\8bit_moderate.wav",
+    'hard_music': r"C:\\Users\\fasih\\Documents\\GitHub\\skills-portfolio-Fasih004\\Assessment 1 - Skills Portfolio\\MATHS-QUIZ\\assets\\8bit_hard.wav",
+    'victory_music': r"C:\\Users\\fasih\\Documents\\GitHub\\skills-portfolio-Fasih004\\Assessment 1 - Skills Portfolio\\MATHS-QUIZ\\assets\\sounds\\win_jingle.wav",
+    'defeat_music': r"C:\\Users\\fasih\\Documents\\GitHub\\skills-portfolio-Fasih004\\Assessment 1 - Skills Portfolio\\MATHS-QUIZ\\assets\\sounds\\lose_jingle.wav",
+    'correct': r"C:\\Users\\fasih\\Documents\\GitHub\\skills-portfolio-Fasih004\\Assessment 1 - Skills Portfolio\\MATHS-QUIZ\\assets\\sounds\\arcade_correct.wav",
+    'wrong': r"C:\\Users\\fasih\\Documents\\GitHub\\skills-portfolio-Fasih004\\Assessment 1 - Skills Portfolio\\MATHS-QUIZ\\assets\\sounds\\arcade_wrong.wav",
+    'button_click': r"C:\\Users\\fasih\\Documents\\GitHub\\skills-portfolio-Fasih004\\Assessment 1 - Skills Portfolio\\MATHS-QUIZ\\assets\\sounds\\button_click.wav"
 }
 
 BACKGROUND_PATHS = {
-    'home': 'assets/backgrounds/home_bg.gif', 
-    'menu': 'assets/backgrounds/menu_bg.gif', 
-    'easy': 'assets/backgrounds/home_bg.gif',
-    'medium': 'assets/backgrounds/menu_bg.gif',
-    'hard': 'assets/backgrounds/home_bg.gif',
-    'win': 'assets/backgrounds/win_bg.gif',
-    'fail': 'assets/backgrounds/fail_bg.gif'
+    'home': r"C:\\Users\\fasih\\Documents\\GitHub\\skills-portfolio-Fasih004\\Assessment 1 - Skills Portfolio\\MATHS-QUIZ\\assets\\backgrounds\\home_bg.gif", 
+    'menu': r"C:\\Users\\fasih\\Documents\\GitHub\\skills-portfolio-Fasih004\\Assessment 1 - Skills Portfolio\\MATHS-QUIZ\\assets\\backgrounds\\menu_bg.gif", 
+    'easy': r"C:\\Users\\fasih\\Documents\\GitHub\\skills-portfolio-Fasih004\\Assessment 1 - Skills Portfolio\\MATHS-QUIZ\\assets\\backgrounds\\home_bg.gif",
+    'medium': r"C:\\Users\\fasih\\Documents\\GitHub\\skills-portfolio-Fasih004\\Assessment 1 - Skills Portfolio\\MATHS-QUIZ\\assets\\backgrounds\\menu_bg.gif",
+    'hard': r"C:\\Users\\fasih\\Documents\\GitHub\\skills-portfolio-Fasih004\\Assessment 1 - Skills Portfolio\\MATHS-QUIZ\\assets\\backgrounds\\home_bg.gif",
+    'win': r"C:\\Users\\fasih\\Documents\\GitHub\\skills-portfolio-Fasih004\\Assessment 1 - Skills Portfolio\\MATHS-QUIZ\\assets\\backgrounds\\win_bg.gif",
+    'fail': r"C:\\Users\\fasih\\Documents\\GitHub\\skills-portfolio-Fasih004\\Assessment 1 - Skills Portfolio\\MATHS-QUIZ\\assets\\backgrounds\\fail_bg.gif"
 }
 
 # --- MAIN WINDOW ---
