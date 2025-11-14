@@ -12,7 +12,7 @@ NEON_COLORS = {
     'neon_cyan': '#00FFFF',
     'neon_yellow': '#FFBA1E',
     'accent_red': '#FF44AA',
-    'text_light': '#ecf0f1',
+    'text_light': "#e1e5e6",
 }
 
 # --- GAME DICTIONARY ---
