@@ -4,8 +4,6 @@ from PIL import Image, ImageTk, ImageSequence
 import random
 import time
 import pygame
-import sys
-import os
 
 # --- THEME ---
 NEON_COLORS = {
@@ -22,7 +20,7 @@ game = {
     'level': None, 
     'question_num': 0, 
     'score': 0,
-    'streak_bonus': 0,  # NEW: separate streak bonus tracking
+    'streak_bonus': 0,
     'chances': 0, 
     'num1': 0, 
     'num2': 0, 
@@ -40,10 +38,10 @@ game = {
     'time_limit': 0, 
     'bg_path': '',   
     'combo_multiplier': 1.0, 
-    'shield_active': False,  
+    'shield_active': False,
     'sounds': {},
     'images': {},
-    'timer_id': None  # NEW: for proper timer cancellation
+    'timer_id': None
 }
 
 # --- ASSET PATHS ---
@@ -103,43 +101,25 @@ def main():
 
 # --- IMAGE LOADING ---
 def load_all_images():
-    print("Loading images...")
     for name, (path, size) in IMAGE_ASSET_LIST.items():
         try:
-            if os.path.exists(path):
-                img = Image.open(path)
-                img = img.resize(size)
-                game['images'][name] = ImageTk.PhotoImage(img)
-                print(f"✓ Loaded: {path}")
-            else:
-                print(f"✗ Not found: {path}")
-                placeholder = Image.new('RGB', size, color=NEON_COLORS['neon_magenta'])
-                game['images'][name] = ImageTk.PhotoImage(placeholder)
+            img = Image.open(path)
+            img = img.resize(size)
+            game['images'][name] = ImageTk.PhotoImage(img)
         except Exception as e:
-            print(f"✗ Error loading {path}: {e}")
-            placeholder = Image.new('RGB', size, color=NEON_COLORS['neon_magenta'])
-            game['images'][name] = ImageTk.PhotoImage(placeholder)
+            print(f"Error loading {name}: {e}")
     
     for name, path in BACKGROUND_PATHS.items():
         try:
-            if os.path.exists(path):
-                gif = Image.open(path)
-                game['images'][f'{name}_frames'] = [
-                    ImageTk.PhotoImage(frame.copy().resize((800, 750))) 
-                    for frame in ImageSequence.Iterator(gif)
-                ]
-                print(f"✓ Loaded GIF: {path} ({len(game['images'][f'{name}_frames'])} frames)")
-            else:
-                print(f"✗ GIF not found: {path}")
-                static_img = Image.new('RGB', (800, 750), color=NEON_COLORS['background_dark'])
-                game['images'][f'{name}_frames'] = [ImageTk.PhotoImage(static_img)]
+            gif = Image.open(path)
+            game['images'][f'{name}_frames'] = [
+                ImageTk.PhotoImage(frame.copy().resize((800, 750))) 
+                for frame in ImageSequence.Iterator(gif)
+            ]
         except Exception as e:
-            print(f"✗ Error loading GIF {path}: {e}")
-            static_img = Image.new('RGB', (800, 750), color=NEON_COLORS['background_dark'])
-            game['images'][f'{name}_frames'] = [ImageTk.PhotoImage(static_img)]
+            print(f"Error loading GIF {name}: {e}")
 
 def clear_screen():
-    # Cancel timer properly
     if game.get('timer_id'):
         try:
             game['root'].after_cancel(game['timer_id'])
@@ -156,18 +136,14 @@ def setup_audio():
         game['sounds'] = {}
         for sound_name, sound_path in AUDIO_ASSET_PATHS.items():
             try:
-                if os.path.exists(sound_path):
-                    if 'music' in sound_name:
-                        game['sounds'][sound_name] = sound_path
-                    else:
-                        game['sounds'][sound_name] = pygame.mixer.Sound(sound_path)
-                    print(f"✓ Loaded audio: {sound_path}")
+                if 'music' in sound_name:
+                    game['sounds'][sound_name] = sound_path
                 else:
-                    print(f"✗ Audio not found: {sound_path}")
+                    game['sounds'][sound_name] = pygame.mixer.Sound(sound_path)
             except Exception as e:
-                print(f"✗ Error loading audio {sound_path}: {e}")
+                print(f"Error loading audio {sound_name}: {e}")
     except Exception as e:
-        print(f"✗ Pygame mixer error: {e}")
+        print(f"Pygame mixer error: {e}")
 
 def button_click_sound(command):
     def wrapper(*args, **kwargs):
@@ -236,13 +212,11 @@ def start_screen():
         instruction_window.resizable(False, False)
         instruction_window.configure(bg=NEON_COLORS['background_dark'])
 
-        # Main container with border
         main_container = Frame(instruction_window, bg=NEON_COLORS['background_dark'], 
                               highlightbackground=NEON_COLORS['neon_cyan'], 
                               highlightthickness=3)
         main_container.pack(fill=BOTH, expand=True, padx=10, pady=10)
         
-        # Title section
         title_frame = Frame(main_container, bg=NEON_COLORS['neon_magenta'], height=80)
         title_frame.pack(fill=X)
         title_frame.pack_propagate(False)
@@ -252,7 +226,6 @@ def start_screen():
               fg=NEON_COLORS['background_dark'], 
               bg=NEON_COLORS['neon_magenta']).pack(pady=25)
         
-        # Scrollable content
         canvas = Canvas(main_container, bg=NEON_COLORS['background_dark'], 
                        highlightthickness=0)
         scrollbar = Scrollbar(main_container, orient="vertical", command=canvas.yview)
@@ -266,7 +239,6 @@ def start_screen():
         canvas.create_window((0, 0), window=scrollable_frame, anchor="nw")
         canvas.configure(yscrollcommand=scrollbar.set)
         
-        # Content
         content = [
             ("🎯 OBJECTIVE", "Complete 10 mathematical diagnostics to test your computational skills. Survive all questions with your lives intact to achieve maximum credits!", NEON_COLORS['neon_yellow']),
             
@@ -304,7 +276,6 @@ def start_screen():
         canvas.pack(side=LEFT, fill=BOTH, expand=True, padx=10, pady=10)
         scrollbar.pack(side=RIGHT, fill=Y, pady=10)
         
-        # Close button
         close_frame = Frame(main_container, bg=NEON_COLORS['background_dark'], height=70)
         close_frame.pack(fill=X)
         close_frame.pack_propagate(False)
@@ -354,7 +325,8 @@ def menu():
             game['root'].after(50, animate, (index + 1) % len(frames))
     animate()
 
-    box = Frame(main_frame, bg=NEON_COLORS['background_dark'], bd=3,relief=RIDGE, highlightbackground=NEON_COLORS['neon_magenta'])
+    box = Frame(main_frame, bg=NEON_COLORS['background_dark'], bd=3, relief=RIDGE, 
+                highlightbackground=NEON_COLORS['neon_magenta'])
     box.place(relx=0.5, rely=0.3, anchor="center")
     
     if 'menu_title' in game['images']:
@@ -362,31 +334,33 @@ def menu():
                   bg=NEON_COLORS['background_dark'])
         l1.pack()
     
-    button1 = Frame(main_frame, bg="#9C86D5", width=200, height=250)
+    button1 = Frame(main_frame, bg='#9C86D5', width=200, height=250)
     button1.place(relx=0.35, rely=0.83, anchor="center")
 
     easy_button = Button(button1, image=game['images']['easy_button'], 
                         bg='#9C86D5', 
-                        activebackground=NEON_COLORS['background_dark'],
+                        activebackground='#2C1F4A',
                         borderwidth=0, highlightthickness=0, cursor="hand2", 
                         command=button_click_sound(lambda: start_quiz(1)))
     easy_button.pack(pady=5)
 
     button2 = Frame(main_frame, bg='#9C86D5', width=200, height=250)
     button2.place(relx=0.5, rely=0.83, anchor="center")
+    
     medium_button = Button(button2, image=game['images']['medium_button'], 
                           bg='#9C86D5', 
-                          activebackground=NEON_COLORS['background_dark'],
+                          activebackground='#2C1F4A',
                           borderwidth=0, highlightthickness=0, cursor="hand2", 
                           command=button_click_sound(lambda: start_quiz(2)))
     medium_button.pack(pady=5)
     
     button3 = Frame(main_frame, bg='#9C86D5', width=200, height=250)
     button3.place(relx=0.65, rely=0.83, anchor="center")
+    
     hard_button = Button(button3, image=game['images']['hard_button'], 
                         bg='#9C86D5', 
-                        activebackground=NEON_COLORS['background_dark'],
-                        borderwidth=0, cursor="hand2", 
+                        activebackground='#2C1F4A',
+                        borderwidth=0, highlightthickness=0, cursor="hand2", 
                         command=button_click_sound(lambda: start_quiz(3)))
     hard_button.pack(pady=5)
     
@@ -446,14 +420,11 @@ def next_question():
     game['question_num'] += 1
     game['chances'] = 2
     game['countdown'] = game['time_limit']
-    game['timer_running'] = True  # CRITICAL: Set to True BEFORE show_q()
+    game['timer_running'] = True
     game['num1'], game['num2'] = random_nums()
     game['operator'] = random.choice(['+', '-'])
     game['ans'] = game['num1'] + game['num2'] if game['operator'] == '+' else game['num1'] - game['num2']
     game['question_start_time'] = time.time()
-    print(f"DEBUG: Timer starting - countdown={game['countdown']}, timer_running={game['timer_running']}")  # DEBUG
-    show_q()  # FIXED: Added this back!
-    print(f"DEBUG: Timer starting - countdown={game['countdown']}, timer_running={game['timer_running']}")  # DEBUG
     show_q()
 
 # --- QUESTION SCREEN ---
@@ -462,73 +433,52 @@ def show_q():
     f = Frame(game['root'], bg=NEON_COLORS['background_dark'])
     f.pack(fill="both", expand=True)
 
-    # CHANGED: Use static background image
     bg_key = game.get('bg_image', 'easy_bg')
     if bg_key in game['images']:
         bg_label = Label(f, image=game['images'][bg_key])
         bg_label.place(x=0, y=0, relwidth=1, relheight=1)
 
-    # CHANGED: Redesigned top bar
     top = Frame(f, bg='#2C1F4A', height=50)
     top.pack(fill=X, side=TOP)
     top.pack_propagate(False)
     
-    # Score on left
     Label(top, text=f"💰 {game['score']}/100", font=("Courier", 16, "bold"), 
           fg=NEON_COLORS['neon_yellow'], bg='#2C1F4A').pack(side=LEFT, padx=20, pady=10)
     
-    # Timer in center - FIXED
     game['timer_label'] = Label(top, text=f"⏱ {game['countdown']}s", 
                                font=('Courier', 18, 'bold'), 
                                fg=NEON_COLORS['neon_cyan'], bg='#2C1F4A')
     game['timer_label'].pack(side=LEFT, padx=150, pady=10)
     
-    # Lives on right
     max_lives = 3 if game['level'] < 3 else 2
     lives_display = "💖" * game['lives'] + "🖤" * (max_lives - game['lives'])
     Label(top, text=lives_display, font=("Courier", 16, "bold"), 
           fg=NEON_COLORS['neon_magenta'], bg='#2C1F4A').pack(side=RIGHT, padx=20, pady=10)
 
-    # FIXED: Completely rewritten timer
     def tick_timer():
-        print(f"DEBUG: tick_timer called - countdown={game['countdown']}, timer_running={game['timer_running']}")  # DEBUG
-        
         if not game['timer_running']:
-            print("DEBUG: Timer not running, stopping")  # DEBUG
             return
         
         if game['countdown'] <= 0:
-            print("DEBUG: Time's up!")  # DEBUG
             game['timer_running'] = False
             handle_timeout()
             return
         
-        # Decrease countdown
         game['countdown'] -= 1
-        print(f"DEBUG: Countdown decreased to {game['countdown']}")  # DEBUG
         
-        # Update label
         try:
             color = NEON_COLORS['neon_yellow'] if game['countdown'] <= 5 else NEON_COLORS['neon_cyan']
             game['timer_label'].config(text=f"⏱ {game['countdown']}s", fg=color)
-            print(f"DEBUG: Label updated")  # DEBUG
-        except Exception as e:
-            print(f"DEBUG: Error updating label: {e}")  # DEBUG
+        except:
             return
         
-        # Schedule next tick
         game['timer_id'] = game['root'].after(1000, tick_timer)
-        print(f"DEBUG: Next tick scheduled")  # DEBUG
     
-    # Start timer immediately
-    print(f"DEBUG: Starting timer with countdown={game['countdown']}")  # DEBUG
     tick_timer()
     
-    # CHANGED: Question number moved next to question
     question_frame = Frame(f, bg=NEON_COLORS['background_dark'])
     question_frame.pack(pady=60)
     
-    # Question number above question
     Label(question_frame, text=f"QUESTION {game['question_num']}/10", 
           font=("Courier", 14, "bold"), fg=NEON_COLORS['neon_cyan'], 
           bg=NEON_COLORS['background_dark']).pack(pady=(0, 10))
@@ -570,7 +520,8 @@ def show_q():
     submit_frame.pack(pady=10)
     
     Button(submit_frame, image=game['images']['submit_button'], 
-           bg=NEON_COLORS['background_dark'], activebackground=NEON_COLORS['background_dark'], 
+           bg=NEON_COLORS['background_dark'], 
+           activebackground=NEON_COLORS['background_dark'], 
            borderwidth=0, highlightthickness=0, cursor="hand2", 
            command=button_click_sound(check)).pack()
 
@@ -585,14 +536,16 @@ def show_q():
         Label(f, text=streak_text, font=("Courier", 12, "bold"), 
               fg=NEON_COLORS['neon_magenta'], bg=NEON_COLORS['background_dark']).pack(pady=5)
         
-    Button(f, image=game['images']['quit_button_q'], bg=NEON_COLORS['background_dark'],
-           activebackground=NEON_COLORS['background_dark'], borderwidth=0, 
-           highlightthickness=0, cursor="hand2", 
+    Button(f, image=game['images']['quit_button_q'], 
+           bg=NEON_COLORS['background_dark'],
+           activebackground=NEON_COLORS['background_dark'], 
+           borderwidth=0, highlightthickness=0, cursor="hand2", 
            command=button_click_sound(confirm_exit)).place(relx=0.95, rely=0.95, anchor="center")
 
-    Button(f, image=game['images']['return_button'], bg=NEON_COLORS['background_dark'], 
-           activebackground=NEON_COLORS['background_dark'], borderwidth=0, 
-           highlightthickness=0, cursor="hand2", 
+    Button(f, image=game['images']['return_button'], 
+           bg=NEON_COLORS['background_dark'], 
+           activebackground=NEON_COLORS['background_dark'], 
+           borderwidth=0, highlightthickness=0, cursor="hand2", 
            command=button_click_sound(lambda: confirm_return())).place(relx=0.055, rely=0.95, anchor="center")
 
 def handle_timeout():
@@ -644,9 +597,6 @@ def lose_life(is_timeout=False):
         messagebox.showwarning("Life Lost", msg)
         next_question()
 
-def update_streak_display():
-    pass
-
 def check_ans(user):
     elapsed = time.time() - game['question_start_time']
     
@@ -658,7 +608,6 @@ def check_ans(user):
         
         points = 10 if game['chances'] == 2 else 5
         
-        # CHANGED: Calculate streak bonus separately
         streak_bonus = 0
         if game['chances'] == 2 and game['level'] == 3 and game['streak'] >= 3:
             game['combo_multiplier'] = 1.0 + (game['streak'] - 2) * 0.5
@@ -733,8 +682,6 @@ def results():
     if 'result_box' in game['images']:
         box_bg = Label(mini_frame, image=game['images']['result_box'])
         box_bg.place(x=0, y=0, relwidth=1, relheight=1)
-    else:
-        mini_frame.config(bg=NEON_COLORS['background_dark'])
 
     if 'card_frame' in game['images']:
         card = Label(mini_frame, image=game['images']['card_frame'], 
@@ -744,7 +691,6 @@ def results():
     Label(mini_frame, text="FINAL CREDITS", font=("Courier", 16, "bold"), 
           fg=NEON_COLORS['neon_cyan'], bg=NEON_COLORS['background_dark']).place(relx=0.5, rely=0.20, anchor="center")
     
-    # CHANGED: Display score directly without animation
     score_display = Frame(mini_frame, bg=NEON_COLORS['background_dark'], relief=SUNKEN, bd=2, 
                          width=180, height=90, highlightbackground=NEON_COLORS['neon_yellow'], 
                          highlightthickness=3)
@@ -757,7 +703,6 @@ def results():
     Label(score_display, text="/ 100 Credits", font=("Courier", 11), 
           fg=NEON_COLORS['text_light'], bg='#181338').place(relx=0.5, rely=0.88, anchor="center")
 
-    # CHANGED: Add separate streak bonus display
     Label(mini_frame, text="STREAK BONUS", font=("Courier", 12, "bold"), 
           fg=NEON_COLORS['neon_magenta'], bg=NEON_COLORS['background_dark']).place(relx=0.5, rely=0.45, anchor="center")
     
@@ -770,7 +715,6 @@ def results():
     Label(bonus_display, text=f"+{game['streak_bonus']}", font=("Courier", 24, "bold"), 
           fg=NEON_COLORS['neon_magenta'], bg=NEON_COLORS['background_dark']).place(relx=0.5, rely=0.5, anchor="center")
 
-    # Grade Section
     grade_box = Frame(mini_frame, bg=NEON_COLORS['neon_magenta'], relief=RAISED, bd=3, 
                      width=100, height=60)
     grade_box.place(relx=0.5, rely=0.62, anchor="center")
@@ -787,7 +731,8 @@ def results():
     record_frame.pack_propagate(False)
 
     if 'record_frame' in game['images']:
-        Label(record_frame, image=game['images']['record_frame'], bg='#8C1345', bd=0).place(x=0, y=0, relwidth=1, relheight=1)
+        Label(record_frame, image=game['images']['record_frame'], 
+              bg='#8C1345', bd=0).place(x=0, y=0, relwidth=1, relheight=1)
 
     questions_answered = game.get('answered_questions', 0)
     lives_remaining = game.get('lives', 0)
@@ -801,14 +746,16 @@ def results():
           fg=NEON_COLORS['text_light'], bg=NEON_COLORS['background_dark'], 
           justify="center").place(relx=0.5, rely=0.5, anchor="center")
 
-    Button(f, image=game['images']['play_again_button'], bg=NEON_COLORS['background_dark'], 
-           activebackground=NEON_COLORS['background_dark'], borderwidth=0, 
-           highlightthickness=0, cursor="hand2", 
+    Button(f, image=game['images']['play_again_button'], 
+           bg=NEON_COLORS['background_dark'], 
+           activebackground=NEON_COLORS['background_dark'], 
+           borderwidth=0, highlightthickness=0, cursor="hand2", 
            command=button_click_sound(menu)).place(relx=0.43, rely=0.93, anchor="center")
 
-    Button(f, image=game['images']['quit_button_home'], bg=NEON_COLORS['background_dark'], 
-           activebackground=NEON_COLORS['background_dark'], borderwidth=0, 
-           highlightthickness=0, cursor="hand2", 
+    Button(f, image=game['images']['quit_button_home'], 
+           bg=NEON_COLORS['background_dark'], 
+           activebackground=NEON_COLORS['background_dark'], 
+           borderwidth=0, highlightthickness=0, cursor="hand2", 
            command=button_click_sound(game['root'].quit)).place(relx=0.57, rely=0.93, anchor="center")
 
 
