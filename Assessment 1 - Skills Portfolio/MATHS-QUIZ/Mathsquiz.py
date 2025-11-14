@@ -21,7 +21,8 @@ NEON_COLORS = {
 game = { 
     'level': None, 
     'question_num': 0, 
-    'score': 0, 
+    'score': 0,
+    'streak_bonus': 0,  # NEW: separate streak bonus tracking
     'chances': 0, 
     'num1': 0, 
     'num2': 0, 
@@ -41,49 +42,49 @@ game = {
     'combo_multiplier': 1.0, 
     'shield_active': False,  
     'sounds': {},
-    'images': {}
+    'images': {},
+    'timer_id': None  # NEW: for proper timer cancellation
 }
 
 # --- ASSET PATHS ---
 IMAGE_ASSET_LIST = {
-    'play_button': (r"C:\\Users\\fasih\\Documents\\GitHub\\skills-portfolio-Fasih004\\Assessment 1 - Skills Portfolio\\MATHS-QUIZ\\assets\\buttons\\play_btn.png", (100, 50)),
-    'instructions_button': (r"C:\\Users\\fasih\\Documents\\GitHub\\skills-portfolio-Fasih004\\Assessment 1 - Skills Portfolio\\MATHS-QUIZ\\assets\\buttons\\instructions_btn.png", (40, 40)),
-    'quit_button_home': (r"C:\\Users\\fasih\\Documents\\GitHub\\skills-portfolio-Fasih004\\Assessment 1 - Skills Portfolio\\MATHS-QUIZ\\assets\\buttons\\quit_btn.png", (40, 40)),
-    'easy_button': (r"C:\\Users\\fasih\\Documents\\GitHub\\skills-portfolio-Fasih004\\Assessment 1 - Skills Portfolio\\MATHS-QUIZ\\assets\\buttons\\easy_btn.png", (100, 80)),
-    'medium_button': (r"C:\\Users\\fasih\\Documents\\GitHub\\skills-portfolio-Fasih004\\Assessment 1 - Skills Portfolio\\MATHS-QUIZ\\assets\\buttons\\medium_btn.png", (100, 80)),
-    'hard_button': (r"C:\\Users\\fasih\\Documents\\GitHub\\skills-portfolio-Fasih004\\Assessment 1 - Skills Portfolio\\MATHS-QUIZ\\assets\\buttons\\hard_btn.png", (100, 80)),
-    'submit_button': (r"C:\\Users\\fasih\\Documents\\GitHub\\skills-portfolio-Fasih004\\Assessment 1 - Skills Portfolio\\MATHS-QUIZ\\assets\\buttons\\submit_btn.png", (120, 50)),
-    'quit_button_q': (r"C:\\Users\\fasih\\Documents\\GitHub\\skills-portfolio-Fasih004\\Assessment 1 - Skills Portfolio\\MATHS-QUIZ\\assets\\buttons\\quit_btn.png", (40, 40)),
-    'return_button': (r"C:\\Users\\fasih\\Documents\\GitHub\\skills-portfolio-Fasih004\\Assessment 1 - Skills Portfolio\\MATHS-QUIZ\\assets\\buttons\\return_btn.png", (40, 40)),
-    'play_again_button': (r"C:\\Users\\fasih\\Documents\\GitHub\\skills-portfolio-Fasih004\\Assessment 1 - Skills Portfolio\\MATHS-QUIZ\\assets\\buttons\\replay_btn.png", (40, 40)),
-    'home_title_img': (r"C:\\Users\\fasih\\Documents\\GitHub\\skills-portfolio-Fasih004\\Assessment 1 - Skills Portfolio\\MATHS-QUIZ\\assets\\ui\\title.png", (400, 80)),
-    'menu_title': (r"C:\\Users\\fasih\\Documents\\GitHub\\skills-portfolio-Fasih004\\Assessment 1 - Skills Portfolio\\MATHS-QUIZ\\assets\\ui\\title.png", (400, 80)),
-    'card_frame': (r"C:\\Users\\fasih\\Documents\\GitHub\\skills-portfolio-Fasih004\\Assessment 1 - Skills Portfolio\\MATHS-QUIZ\\assets\\ui\\card_frame.png", (400, 300)),
-    'record_frame': (r"C:\\Users\\fasih\\Documents\\GitHub\\skills-portfolio-Fasih004\\Assessment 1 - Skills Portfolio\\MATHS-QUIZ\\assets\\ui\\record_frame.png", (400, 300)),
-    'instructions_label': (r"C:\\Users\\fasih\\Documents\\GitHub\\skills-portfolio-Fasih004\\Assessment 1 - Skills Portfolio\\MATHS-QUIZ\\assets\\ui\\instructions_label.png", (500, 600)),
-    'result_box': (r"C:\\Users\\fasih\\Documents\\GitHub\\skills-portfolio-Fasih004\\Assessment 1 - Skills Portfolio\\MATHS-QUIZ\\assets\\ui\\card_box.png", (450, 550)),
+    'play_button': (r"C:\Users\fasih\Documents\GitHub\skills-portfolio-Fasih004\Assessment 1 - Skills Portfolio\MATHS-QUIZ\assets\buttons\play_btn.png", (100, 50)),
+    'instructions_button': (r"C:\Users\fasih\Documents\GitHub\skills-portfolio-Fasih004\Assessment 1 - Skills Portfolio\MATHS-QUIZ\assets\buttons\instructions_btn.png", (40, 40)),
+    'quit_button_home': (r"C:\Users\fasih\Documents\GitHub\skills-portfolio-Fasih004\Assessment 1 - Skills Portfolio\MATHS-QUIZ\assets\buttons\quit_btn.png", (40, 40)),
+    'easy_button': (r"C:\Users\fasih\Documents\GitHub\skills-portfolio-Fasih004\Assessment 1 - Skills Portfolio\MATHS-QUIZ\assets\buttons\easy_btn.png", (100, 80)),
+    'medium_button': (r"C:\Users\fasih\Documents\GitHub\skills-portfolio-Fasih004\Assessment 1 - Skills Portfolio\MATHS-QUIZ\assets\buttons\medium_btn.png", (100, 80)),
+    'hard_button': (r"C:\Users\fasih\Documents\GitHub\skills-portfolio-Fasih004\Assessment 1 - Skills Portfolio\MATHS-QUIZ\assets\buttons\hard_btn.png", (100, 80)),
+    'submit_button': (r"C:\Users\fasih\Documents\GitHub\skills-portfolio-Fasih004\Assessment 1 - Skills Portfolio\MATHS-QUIZ\assets\buttons\submit_btn.png", (120, 50)),
+    'quit_button_q': (r"C:\Users\fasih\Documents\GitHub\skills-portfolio-Fasih004\Assessment 1 - Skills Portfolio\MATHS-QUIZ\assets\buttons\quit_btn.png", (40, 40)),
+    'return_button': (r"C:\Users\fasih\Documents\GitHub\skills-portfolio-Fasih004\Assessment 1 - Skills Portfolio\MATHS-QUIZ\assets\buttons\return_btn.png", (40, 40)),
+    'play_again_button': (r"C:\Users\fasih\Documents\GitHub\skills-portfolio-Fasih004\Assessment 1 - Skills Portfolio\MATHS-QUIZ\assets\buttons\replay_btn.png", (40, 40)),
+    'home_title_img': (r"C:\Users\fasih\Documents\GitHub\skills-portfolio-Fasih004\Assessment 1 - Skills Portfolio\MATHS-QUIZ\assets\ui\title.png", (400, 80)),
+    'menu_title': (r"C:\Users\fasih\Documents\GitHub\skills-portfolio-Fasih004\Assessment 1 - Skills Portfolio\MATHS-QUIZ\assets\ui\menu_title.png", (400, 80)),
+    'card_frame': (r"C:\Users\fasih\Documents\GitHub\skills-portfolio-Fasih004\Assessment 1 - Skills Portfolio\MATHS-QUIZ\assets\ui\card_frame.png", (400, 300)),
+    'record_frame': (r"C:\Users\fasih\Documents\GitHub\skills-portfolio-Fasih004\Assessment 1 - Skills Portfolio\MATHS-QUIZ\assets\ui\record_frame.png", (400, 300)),
+    'result_box': (r"C:\Users\fasih\Documents\GitHub\skills-portfolio-Fasih004\Assessment 1 - Skills Portfolio\MATHS-QUIZ\assets\ui\card_box.png", (450, 550)),
+    'easy_bg': (r"C:\Users\fasih\Documents\GitHub\skills-portfolio-Fasih004\Assessment 1 - Skills Portfolio\MATHS-QUIZ\assets\backgrounds\easy_bg.jpg", (800, 750)),
+    'medium_bg': (r"C:\Users\fasih\Documents\GitHub\skills-portfolio-Fasih004\Assessment 1 - Skills Portfolio\MATHS-QUIZ\assets\backgrounds\medium_bg.jpg", (800, 750)),
+    'hard_bg': (r"C:\Users\fasih\Documents\GitHub\skills-portfolio-Fasih004\Assessment 1 - Skills Portfolio\MATHS-QUIZ\assets\backgrounds\hard_bg.jpg", (800, 750)),
 }
 
 AUDIO_ASSET_PATHS = {
-    'home_music': r"C:\\Users\\fasih\\Documents\\GitHub\\skills-portfolio-Fasih004\\Assessment 1 - Skills Portfolio\\MATHS-QUIZ\\assets\\sounds\\synthwave_menu.wav",
-    'easy_music': r"C:\\Users\\fasih\\Documents\\GitHub\\skills-portfolio-Fasih004\\Assessment 1 - Skills Portfolio\\MATHS-QUIZ\\assets\\8bit_easy.wav",
-    'medium_music': r"C:\\Users\\fasih\\Documents\\GitHub\\skills-portfolio-Fasih004\\Assessment 1 - Skills Portfolio\\MATHS-QUIZ\\assets\\8bit_moderate.wav",
-    'hard_music': r"C:\\Users\\fasih\\Documents\\GitHub\\skills-portfolio-Fasih004\\Assessment 1 - Skills Portfolio\\MATHS-QUIZ\\assets\\8bit_hard.wav",
-    'victory_music': r"C:\\Users\\fasih\\Documents\\GitHub\\skills-portfolio-Fasih004\\Assessment 1 - Skills Portfolio\\MATHS-QUIZ\\assets\\sounds\\win_jingle.wav",
-    'defeat_music': r"C:\\Users\\fasih\\Documents\\GitHub\\skills-portfolio-Fasih004\\Assessment 1 - Skills Portfolio\\MATHS-QUIZ\\assets\\sounds\\lose_jingle.wav",
-    'correct': r"C:\\Users\\fasih\\Documents\\GitHub\\skills-portfolio-Fasih004\\Assessment 1 - Skills Portfolio\\MATHS-QUIZ\\assets\\sounds\\arcade_correct.wav",
-    'wrong': r"C:\\Users\\fasih\\Documents\\GitHub\\skills-portfolio-Fasih004\\Assessment 1 - Skills Portfolio\\MATHS-QUIZ\\assets\\sounds\\arcade_wrong.wav",
-    'button_click': r"C:\\Users\\fasih\\Documents\\GitHub\\skills-portfolio-Fasih004\\Assessment 1 - Skills Portfolio\\MATHS-QUIZ\\assets\\sounds\\button_click.wav"
+    'home_music': r"C:\Users\fasih\Documents\GitHub\skills-portfolio-Fasih004\Assessment 1 - Skills Portfolio\MATHS-QUIZ\assets\sounds\home_music.wav",
+    'easy_music': r"C:\Users\fasih\Documents\GitHub\skills-portfolio-Fasih004\Assessment 1 - Skills Portfolio\MATHS-QUIZ\assets\sounds\easy_music.wav",
+    'medium_music': r"C:\Users\fasih\Documents\GitHub\skills-portfolio-Fasih004\Assessment 1 - Skills Portfolio\MATHS-QUIZ\assets\sounds\medium_music.wav",
+    'hard_music': r"C:\Users\fasih\Documents\GitHub\skills-portfolio-Fasih004\Assessment 1 - Skills Portfolio\MATHS-QUIZ\assets\sounds\hard_music.wav",
+    'victory_music': r"C:\Users\fasih\Documents\GitHub\skills-portfolio-Fasih004\Assessment 1 - Skills Portfolio\MATHS-QUIZ\assets\sounds\victory.wav",
+    'defeat_music': r"C:\Users\fasih\Documents\GitHub\skills-portfolio-Fasih004\Assessment 1 - Skills Portfolio\MATHS-QUIZ\assets\sounds\defeat.wav",
+    'correct': r"C:\Users\fasih\Documents\GitHub\skills-portfolio-Fasih004\Assessment 1 - Skills Portfolio\MATHS-QUIZ\assets\sounds\correct.wav",
+    'wrong': r"C:\Users\fasih\Documents\GitHub\skills-portfolio-Fasih004\Assessment 1 - Skills Portfolio\MATHS-QUIZ\assets\sounds\wrong.wav",
+    'button_click': r"C:\Users\fasih\Documents\GitHub\skills-portfolio-Fasih004\Assessment 1 - Skills Portfolio\MATHS-QUIZ\assets\sounds\button_click.wav"
 }
 
 BACKGROUND_PATHS = {
-    'home': r"C:\\Users\\fasih\\Documents\\GitHub\\skills-portfolio-Fasih004\\Assessment 1 - Skills Portfolio\\MATHS-QUIZ\\assets\\backgrounds\\home_bg.gif", 
-    'menu': r"C:\\Users\\fasih\\Documents\\GitHub\\skills-portfolio-Fasih004\\Assessment 1 - Skills Portfolio\\MATHS-QUIZ\\assets\\backgrounds\\menu_bg.gif", 
-    'easy': r"C:\\Users\\fasih\\Documents\\GitHub\\skills-portfolio-Fasih004\\Assessment 1 - Skills Portfolio\\MATHS-QUIZ\\assets\\backgrounds\\home_bg.gif",
-    'medium': r"C:\\Users\\fasih\\Documents\\GitHub\\skills-portfolio-Fasih004\\Assessment 1 - Skills Portfolio\\MATHS-QUIZ\\assets\\backgrounds\\menu_bg.gif",
-    'hard': r"C:\\Users\\fasih\\Documents\\GitHub\\skills-portfolio-Fasih004\\Assessment 1 - Skills Portfolio\\MATHS-QUIZ\\assets\\backgrounds\\home_bg.gif",
-    'win': r"C:\\Users\\fasih\\Documents\\GitHub\\skills-portfolio-Fasih004\\Assessment 1 - Skills Portfolio\\MATHS-QUIZ\\assets\\backgrounds\\win_bg.gif",
-    'fail': r"C:\\Users\\fasih\\Documents\\GitHub\\skills-portfolio-Fasih004\\Assessment 1 - Skills Portfolio\\MATHS-QUIZ\\assets\\backgrounds\\fail_bg.gif"
+    'home': r"C:\Users\fasih\Documents\GitHub\skills-portfolio-Fasih004\Assessment 1 - Skills Portfolio\MATHS-QUIZ\assets\backgrounds\home_bg.gif", 
+    'menu': r"C:\Users\fasih\Documents\GitHub\skills-portfolio-Fasih004\Assessment 1 - Skills Portfolio\MATHS-QUIZ\assets\backgrounds\menu_bg.jpg", 
+    'win': r"C:\Users\fasih\Documents\GitHub\skills-portfolio-Fasih004\Assessment 1 - Skills Portfolio\MATHS-QUIZ\assets\backgrounds\win_bg.gif",
+    'fail': r"C:\Users\fasih\Documents\GitHub\skills-portfolio-Fasih004\Assessment 1 - Skills Portfolio\MATHS-QUIZ\assets\backgrounds\fail_bg.gif"
 }
 
 # --- MAIN WINDOW ---
@@ -138,8 +139,13 @@ def load_all_images():
             game['images'][f'{name}_frames'] = [ImageTk.PhotoImage(static_img)]
 
 def clear_screen():
-    if 'timer_running' in game:
-        game['timer_running'] = False
+    # Cancel timer properly
+    if game.get('timer_id'):
+        try:
+            game['root'].after_cancel(game['timer_id'])
+        except:
+            pass
+    game['timer_running'] = False
     for widget in game['root'].winfo_children():
         widget.destroy()
 
@@ -225,50 +231,94 @@ def start_screen():
 
     def show_instructions():
         instruction_window = Toplevel(game['root'])
-        instruction_window.title("Quiz Instructions")
-        instruction_window.geometry("600x670")
+        instruction_window.title("📖 MATH QUIZ PROTOCOL // SYSTEM GUIDE")
+        instruction_window.geometry("700x750")
         instruction_window.resizable(False, False)
         instruction_window.configure(bg=NEON_COLORS['background_dark'])
 
-        if 'instructions_label' in game['images']:
-            instruction_label = Label(instruction_window, 
-                                     image=game['images']['instructions_label'], 
-                                     bg=NEON_COLORS['background_dark'])
-            instruction_label.place(relx=0.5, rely=0.5, anchor="center")
+        # Main container with border
+        main_container = Frame(instruction_window, bg=NEON_COLORS['background_dark'], 
+                              highlightbackground=NEON_COLORS['neon_cyan'], 
+                              highlightthickness=3)
+        main_container.pack(fill=BOTH, expand=True, padx=10, pady=10)
         
-        instructions_text = """
-        👾 MATH QUIZ PROTOCOL 👾
-
-        1. Select difficulty:
-            • EASY: 1-Digit, 30s, 3 lives
-            • MODERATE: 2-Digit, 20s
-            • ADVANCED: 4-Digit, 15s, 2 lives
-
-        2. Complete 10 math problems
-
-        3. Two attempts per problem:
-            • 1st correct: 10 Credits
-            • 2nd correct: 5 Credits
+        # Title section
+        title_frame = Frame(main_container, bg=NEON_COLORS['neon_magenta'], height=80)
+        title_frame.pack(fill=X)
+        title_frame.pack_propagate(False)
         
-        4. Wrong answers/timeout = lose 1 Life
-
-        5. Build 3+ streak for bonus!
-
-        6. Max Credits: 100
-        """
-        text_overlay = Label(instruction_window, text=instructions_text, 
-                           font=('Courier', 11), justify='left', 
-                           bg=NEON_COLORS['background_dark'], 
-                           fg=NEON_COLORS['neon_cyan'])
-        text_overlay.place(relx=0.5, rely=0.5, anchor="center")
+        Label(title_frame, text="👾 MATH QUIZ PROTOCOL 👾", 
+              font=('Courier', 20, 'bold'), 
+              fg=NEON_COLORS['background_dark'], 
+              bg=NEON_COLORS['neon_magenta']).pack(pady=25)
         
-        close_btn = Button(instruction_window, text="CLOSE", 
-                          command=instruction_window.destroy,
-                          font=('Courier', 12, 'bold'), 
-                          bg=NEON_COLORS['neon_magenta'], 
-                          fg=NEON_COLORS['background_dark'],
-                          cursor='hand2', padx=20, pady=10)
-        close_btn.place(relx=0.5, rely=0.9, anchor='center')
+        # Scrollable content
+        canvas = Canvas(main_container, bg=NEON_COLORS['background_dark'], 
+                       highlightthickness=0)
+        scrollbar = Scrollbar(main_container, orient="vertical", command=canvas.yview)
+        scrollable_frame = Frame(canvas, bg=NEON_COLORS['background_dark'])
+        
+        scrollable_frame.bind(
+            "<Configure>",
+            lambda e: canvas.configure(scrollregion=canvas.bbox("all"))
+        )
+        
+        canvas.create_window((0, 0), window=scrollable_frame, anchor="nw")
+        canvas.configure(yscrollcommand=scrollbar.set)
+        
+        # Content
+        content = [
+            ("🎯 OBJECTIVE", "Complete 10 mathematical diagnostics to test your computational skills. Survive all questions with your lives intact to achieve maximum credits!", NEON_COLORS['neon_yellow']),
+            
+            ("🎮 DIFFICULTY MODES", "", NEON_COLORS['neon_cyan']),
+            ("  🌱 EASY MODE", "• Numbers: 1-9 (Single Digit)\n• Time Limit: 30 seconds per question\n• Lives: 3 hearts\n• Perfect for beginners!", NEON_COLORS['text_light']),
+            ("  🍂 MODERATE MODE", "• Numbers: 10-99 (Double Digit)\n• Time Limit: 20 seconds per question\n• Lives: 3 hearts\n• Challenge your speed!", NEON_COLORS['text_light']),
+            ("  🔥 ADVANCED MODE", "• Numbers: 1000-9999 (Four Digits)\n• Time Limit: 15 seconds per question\n• Lives: 2 hearts\n• COMBO multiplier for streaks!\n• Only for math masters!", NEON_COLORS['text_light']),
+            
+            ("⚡ HOW TO PLAY", "", NEON_COLORS['neon_cyan']),
+            ("", "1. Select your difficulty level\n2. Solve 10 math problems (+ or -)\n3. Type your answer and press ENTER or click SUBMIT\n4. Beat the timer for each question!", NEON_COLORS['text_light']),
+            
+            ("💎 SCORING SYSTEM", "", NEON_COLORS['neon_cyan']),
+            ("", "✓ First Attempt Correct: +10 Credits\n✓ Second Attempt Correct: +5 Credits\n✗ Both Wrong or Timeout: Lose 1 Life\n\n🔥 STREAK BONUS:\n• Get 3+ correct in a row for bonus points!\n• Advanced mode has COMBO multiplier!", NEON_COLORS['text_light']),
+            
+            ("❤️ LIVES SYSTEM", "", NEON_COLORS['neon_cyan']),
+            ("", "• Start with 2-3 lives (depends on difficulty)\n• Lose a life when:\n  - Both attempts are wrong\n  - Timer runs out\n• Game Over when all lives are lost!", NEON_COLORS['text_light']),
+            
+            ("🏆 RANKING", "", NEON_COLORS['neon_cyan']),
+            ("", "S Rank: 90-100 points (PHENOMENAL!)\nA+ Rank: 80-89 points (EXCELLENT!)\nA Rank: 70-79 points (GREAT JOB!)\nB Rank: 60-69 points (GOOD WORK!)\nC Rank: 50-59 points (KEEP TRYING!)\nF Rank: Below 50 (TRY AGAIN!)", NEON_COLORS['text_light']),
+            
+            ("💡 PRO TIPS", "", NEON_COLORS['neon_yellow']),
+            ("", "• Use mental math for speed\n• Don't panic when timer goes yellow!\n• Build streaks for bonus points\n• Practice makes perfect!", NEON_COLORS['text_light']),
+        ]
+        
+        for title, text, color in content:
+            if title:
+                Label(scrollable_frame, text=title, font=('Courier', 14, 'bold'), 
+                      fg=color, bg=NEON_COLORS['background_dark'], 
+                      anchor='w', justify='left').pack(fill=X, padx=20, pady=(15, 5))
+            if text:
+                Label(scrollable_frame, text=text, font=('Courier', 11), 
+                      fg=color, bg=NEON_COLORS['background_dark'], 
+                      anchor='w', justify='left', wraplength=620).pack(fill=X, padx=30, pady=(0, 5))
+        
+        canvas.pack(side=LEFT, fill=BOTH, expand=True, padx=10, pady=10)
+        scrollbar.pack(side=RIGHT, fill=Y, pady=10)
+        
+        # Close button
+        close_frame = Frame(main_container, bg=NEON_COLORS['background_dark'], height=70)
+        close_frame.pack(fill=X)
+        close_frame.pack_propagate(False)
+        
+        Button(close_frame, text="✖ CLOSE PROTOCOL", 
+               command=instruction_window.destroy,
+               font=('Courier', 14, 'bold'), 
+               bg=NEON_COLORS['neon_magenta'], 
+               fg=NEON_COLORS['background_dark'],
+               activebackground=NEON_COLORS['neon_cyan'],
+               cursor='hand2', 
+               padx=30, pady=15,
+               relief=RAISED,
+               bd=3).pack(pady=15)
 
     instruction_button = Button(start_frame, 
                                image=game['images']['instructions_button'], 
@@ -304,8 +354,7 @@ def menu():
             game['root'].after(50, animate, (index + 1) % len(frames))
     animate()
 
-    box = Frame(main_frame, bg=NEON_COLORS['background_dark'], bd=3, 
-               relief=RIDGE, highlightbackground=NEON_COLORS['neon_magenta'])
+    box = Frame(main_frame, bg=NEON_COLORS['background_dark'], bd=3,relief=RIDGE, highlightbackground=NEON_COLORS['neon_magenta'])
     box.place(relx=0.5, rely=0.3, anchor="center")
     
     if 'menu_title' in game['images']:
@@ -313,35 +362,33 @@ def menu():
                   bg=NEON_COLORS['background_dark'])
         l1.pack()
     
-    buttons = Frame(main_frame, bg=NEON_COLORS['background_dark'])
-    buttons.place(relx=0.5, rely=0.6, anchor="center")
+    button1 = Frame(main_frame, bg="#9C86D5", width=200, height=250)
+    button1.place(relx=0.35, rely=0.83, anchor="center")
 
-    easy_button = Button(buttons, image=game['images']['easy_button'], 
-                        bg=NEON_COLORS['background_dark'], 
+    easy_button = Button(button1, image=game['images']['easy_button'], 
+                        bg='#9C86D5', 
                         activebackground=NEON_COLORS['background_dark'],
                         borderwidth=0, highlightthickness=0, cursor="hand2", 
                         command=button_click_sound(lambda: start_quiz(1)))
     easy_button.pack(pady=5)
 
-    medium_button = Button(buttons, image=game['images']['medium_button'], 
-                          bg=NEON_COLORS['background_dark'], 
+    button2 = Frame(main_frame, bg='#9C86D5', width=200, height=250)
+    button2.place(relx=0.5, rely=0.83, anchor="center")
+    medium_button = Button(button2, image=game['images']['medium_button'], 
+                          bg='#9C86D5', 
                           activebackground=NEON_COLORS['background_dark'],
                           borderwidth=0, highlightthickness=0, cursor="hand2", 
                           command=button_click_sound(lambda: start_quiz(2)))
     medium_button.pack(pady=5)
     
-    hard_button = Button(buttons, image=game['images']['hard_button'], 
-                        bg=NEON_COLORS['background_dark'], 
+    button3 = Frame(main_frame, bg='#9C86D5', width=200, height=250)
+    button3.place(relx=0.65, rely=0.83, anchor="center")
+    hard_button = Button(button3, image=game['images']['hard_button'], 
+                        bg='#9C86D5', 
                         activebackground=NEON_COLORS['background_dark'],
                         borderwidth=0, cursor="hand2", 
                         command=button_click_sound(lambda: start_quiz(3)))
     hard_button.pack(pady=5)
-
-    footer = Label(main_frame, 
-                  text="10 Questions • 2 Attempts • Max 100 Credits", 
-                  font=("Courier", 12), fg=NEON_COLORS['neon_cyan'], 
-                  bg=NEON_COLORS['background_dark'])
-    footer.place(relx=0.5, rely=0.9, anchor="center")
     
     exit_button = Button(main_frame, image=game['images']['quit_button_home'], 
                         bg=NEON_COLORS['background_dark'], 
@@ -369,23 +416,23 @@ def random_nums():
 def start_quiz(level):
     stop_music()
     game.update({
-        'level': level, 'question_num': 0, 'score': 0, 'streak': 0,
+        'level': level, 'question_num': 0, 'score': 0, 'streak': 0, 'streak_bonus': 0,
         'chances': 2, 'time_taken': [], 'question_start_time': 0,
         'answered_questions': 0, 'combo_multiplier': 1.0, 'shield_active': False
     })
 
     if level == 1:
-        game['bg_path'] = 'easy_frames'
+        game['bg_image'] = 'easy_bg'
         game['time_limit'] = 30
         game['lives'] = 3
         play_music('easy_music')
     elif level == 2:
-        game['bg_path'] = 'medium_frames'
+        game['bg_image'] = 'medium_bg'
         game['time_limit'] = 20
         game['lives'] = 3
         play_music('medium_music')
     elif level == 3:
-        game['bg_path'] = 'hard_frames'
+        game['bg_image'] = 'hard_bg'
         game['time_limit'] = 15
         game['lives'] = 2
         play_music('hard_music')
@@ -399,11 +446,14 @@ def next_question():
     game['question_num'] += 1
     game['chances'] = 2
     game['countdown'] = game['time_limit']
-    game['timer_running'] = True
+    game['timer_running'] = True  # CRITICAL: Set to True BEFORE show_q()
     game['num1'], game['num2'] = random_nums()
     game['operator'] = random.choice(['+', '-'])
     game['ans'] = game['num1'] + game['num2'] if game['operator'] == '+' else game['num1'] - game['num2']
     game['question_start_time'] = time.time()
+    print(f"DEBUG: Timer starting - countdown={game['countdown']}, timer_running={game['timer_running']}")  # DEBUG
+    show_q()  # FIXED: Added this back!
+    print(f"DEBUG: Timer starting - countdown={game['countdown']}, timer_running={game['timer_running']}")  # DEBUG
     show_q()
 
 # --- QUESTION SCREEN ---
@@ -412,68 +462,81 @@ def show_q():
     f = Frame(game['root'], bg=NEON_COLORS['background_dark'])
     f.pack(fill="both", expand=True)
 
-    frames = game['images'].get(game['bg_path'], [])
-    bg_label = Label(f, bg=NEON_COLORS['background_dark'])
-    bg_label.place(x=0, y=0, relwidth=1, relheight=1)
+    # CHANGED: Use static background image
+    bg_key = game.get('bg_image', 'easy_bg')
+    if bg_key in game['images']:
+        bg_label = Label(f, image=game['images'][bg_key])
+        bg_label.place(x=0, y=0, relwidth=1, relheight=1)
 
-    def animate_bg(index=0):
-        if frames:
-            try:
-                bg_label.config(image=frames[index])
-                bg_label.lower()
-                game['root'].after(50, animate_bg, (index + 1) % len(frames))
-            except:
-                pass
-    animate_bg(0)
-
-    top = Frame(f, bg=NEON_COLORS['accent_red'], height=60)
+    # CHANGED: Redesigned top bar
+    top = Frame(f, bg='#2C1F4A', height=50)
     top.pack(fill=X, side=TOP)
     top.pack_propagate(False)
     
-    Label(top, text=f"Q {game['question_num']}/10", font=("Courier", 14, "bold"), 
-          fg=NEON_COLORS['background_dark'], bg=NEON_COLORS['accent_red']).pack(side=LEFT, padx=20, pady=15)
+    # Score on left
+    Label(top, text=f"💰 {game['score']}/100", font=("Courier", 16, "bold"), 
+          fg=NEON_COLORS['neon_yellow'], bg='#2C1F4A').pack(side=LEFT, padx=20, pady=10)
     
-    game['score_label'] = Label(top, text=f"Credits: {game['score']}/100", 
-                               font=("Courier", 14, "bold"), 
-                               fg=NEON_COLORS['neon_yellow'], 
-                               bg=NEON_COLORS['accent_red'])
-    game['score_label'].pack(side=LEFT, padx=10, pady=15)
-    
+    # Timer in center - FIXED
     game['timer_label'] = Label(top, text=f"⏱ {game['countdown']}s", 
-                               font=('Courier', 14, 'bold'), 
-                               fg=NEON_COLORS['neon_cyan'], 
-                               bg=NEON_COLORS['accent_red'])
-    game['timer_label'].pack(side=RIGHT, padx=20, pady=15)
+                               font=('Courier', 18, 'bold'), 
+                               fg=NEON_COLORS['neon_cyan'], bg='#2C1F4A')
+    game['timer_label'].pack(side=LEFT, padx=150, pady=10)
     
+    # Lives on right
     max_lives = 3 if game['level'] < 3 else 2
     lives_display = "💖" * game['lives'] + "🖤" * (max_lives - game['lives'])
-    Label(top, text=f"Lives: {lives_display}", font=("Courier", 14, "bold"), 
-          fg=NEON_COLORS['neon_magenta'], bg=NEON_COLORS['accent_red']).pack(side=RIGHT, padx=10, pady=15)
+    Label(top, text=lives_display, font=("Courier", 16, "bold"), 
+          fg=NEON_COLORS['neon_magenta'], bg='#2C1F4A').pack(side=RIGHT, padx=20, pady=10)
 
+    # FIXED: Completely rewritten timer
     def tick_timer():
-        if not game.get('timer_running', False):
+        print(f"DEBUG: tick_timer called - countdown={game['countdown']}, timer_running={game['timer_running']}")  # DEBUG
+        
+        if not game['timer_running']:
+            print("DEBUG: Timer not running, stopping")  # DEBUG
             return
-        if game['countdown'] > 0:
-            game['countdown'] -= 1
-            try:
-                color = NEON_COLORS['neon_yellow'] if game['countdown'] <= 5 else NEON_COLORS['neon_cyan']
-                game['timer_label'].config(text=f"⏱ {game['countdown']}s", fg=color)
-            except:
-                return
-            game['root'].after(1000, tick_timer)
-        else:
+        
+        if game['countdown'] <= 0:
+            print("DEBUG: Time's up!")  # DEBUG
             game['timer_running'] = False
             handle_timeout()
+            return
+        
+        # Decrease countdown
+        game['countdown'] -= 1
+        print(f"DEBUG: Countdown decreased to {game['countdown']}")  # DEBUG
+        
+        # Update label
+        try:
+            color = NEON_COLORS['neon_yellow'] if game['countdown'] <= 5 else NEON_COLORS['neon_cyan']
+            game['timer_label'].config(text=f"⏱ {game['countdown']}s", fg=color)
+            print(f"DEBUG: Label updated")  # DEBUG
+        except Exception as e:
+            print(f"DEBUG: Error updating label: {e}")  # DEBUG
+            return
+        
+        # Schedule next tick
+        game['timer_id'] = game['root'].after(1000, tick_timer)
+        print(f"DEBUG: Next tick scheduled")  # DEBUG
     
+    # Start timer immediately
+    print(f"DEBUG: Starting timer with countdown={game['countdown']}")  # DEBUG
     tick_timer()
     
+    # CHANGED: Question number moved next to question
     question_frame = Frame(f, bg=NEON_COLORS['background_dark'])
-    question_frame.pack(pady=40)
+    question_frame.pack(pady=60)
+    
+    # Question number above question
+    Label(question_frame, text=f"QUESTION {game['question_num']}/10", 
+          font=("Courier", 14, "bold"), fg=NEON_COLORS['neon_cyan'], 
+          bg=NEON_COLORS['background_dark']).pack(pady=(0, 10))
     
     question_display = Frame(question_frame, bg=NEON_COLORS['background_dark'], bd=5, 
                             relief=SOLID, highlightbackground=NEON_COLORS['neon_cyan'], 
                             highlightthickness=2)
-    question_display.pack(padx=20, pady=20)
+    question_display.pack(padx=20, pady=10)
     
     op_col = NEON_COLORS['neon_cyan'] if game['operator'] == '+' else NEON_COLORS['neon_magenta']
     
@@ -551,6 +614,8 @@ def check():
     try:
         ans = int(game['entry'].get())
         game['timer_running'] = False
+        if game.get('timer_id'):
+            game['root'].after_cancel(game['timer_id'])
         check_ans(ans)
     except ValueError:
         messagebox.showerror("Invalid", "Enter a valid number!")
@@ -593,17 +658,22 @@ def check_ans(user):
         
         points = 10 if game['chances'] == 2 else 5
         
+        # CHANGED: Calculate streak bonus separately
+        streak_bonus = 0
         if game['chances'] == 2 and game['level'] == 3 and game['streak'] >= 3:
             game['combo_multiplier'] = 1.0 + (game['streak'] - 2) * 0.5
-            points = int(points * game['combo_multiplier'])
+            bonus_points = int(points * (game['combo_multiplier'] - 1.0))
+            streak_bonus = bonus_points
         elif game['chances'] == 2 and game['streak'] >= 3:
-            points += game['streak'] * 2
+            streak_bonus = game['streak'] * 2
         
         if game['chances'] == 1:
             game['streak'] = 0
-            
+        
         game['score'] += points
-        messagebox.showinfo("Correct!", f"✅ +{points} Credits!")
+        game['streak_bonus'] += streak_bonus
+        
+        messagebox.showinfo("Correct!", f"✅ +{points} Credits!" + (f"\n🔥 +{streak_bonus} Streak Bonus!" if streak_bonus > 0 else ""))
         next_question()
     else:
         play_sound_effect('wrong')
@@ -666,51 +736,58 @@ def results():
     else:
         mini_frame.config(bg=NEON_COLORS['background_dark'])
 
-
     if 'card_frame' in game['images']:
         card = Label(mini_frame, image=game['images']['card_frame'], 
-                    bg= '#8C1345', bd=0)
+                    bg='#8C1345', bd=0)
         card.place(relx=0.5, rely=0.47, anchor="center")
 
     Label(mini_frame, text="FINAL CREDITS", font=("Courier", 16, "bold"), 
-          fg=NEON_COLORS['neon_cyan'], bg=NEON_COLORS['background_dark']).place(relx=0.5, rely=0.26, anchor="center")
+          fg=NEON_COLORS['neon_cyan'], bg=NEON_COLORS['background_dark']).place(relx=0.5, rely=0.20, anchor="center")
     
+    # CHANGED: Display score directly without animation
     score_display = Frame(mini_frame, bg=NEON_COLORS['background_dark'], relief=SUNKEN, bd=2, 
                          width=180, height=90, highlightbackground=NEON_COLORS['neon_yellow'], 
                          highlightthickness=3)
-    score_display.place(relx=0.5, rely=0.38, anchor="center")
+    score_display.place(relx=0.5, rely=0.32, anchor="center")
     score_display.pack_propagate(False)
     
-    score_label = Label(score_display, text="0", font=("Courier", 42, "bold"), 
-                       fg=NEON_COLORS['neon_yellow'], bg=NEON_COLORS['background_dark'])
-    score_label.place(relx=0.5, rely=0.44, anchor="center")
-
-    def animate_score(i=0):
-        if i <= score:
-            score_label.config(text=str(i))
-            game['root'].after(20, lambda: animate_score(i + 1))
-    animate_score()
+    Label(score_display, text=str(score), font=("Courier", 42, "bold"), 
+          fg=NEON_COLORS['neon_yellow'], bg=NEON_COLORS['background_dark']).place(relx=0.5, rely=0.44, anchor="center")
 
     Label(score_display, text="/ 100 Credits", font=("Courier", 11), 
           fg=NEON_COLORS['text_light'], bg='#181338').place(relx=0.5, rely=0.88, anchor="center")
 
+    # CHANGED: Add separate streak bonus display
+    Label(mini_frame, text="STREAK BONUS", font=("Courier", 12, "bold"), 
+          fg=NEON_COLORS['neon_magenta'], bg=NEON_COLORS['background_dark']).place(relx=0.5, rely=0.45, anchor="center")
+    
+    bonus_display = Frame(mini_frame, bg=NEON_COLORS['background_dark'], relief=SUNKEN, bd=2, 
+                         width=120, height=50, highlightbackground=NEON_COLORS['neon_magenta'], 
+                         highlightthickness=2)
+    bonus_display.place(relx=0.5, rely=0.52, anchor="center")
+    bonus_display.pack_propagate(False)
+    
+    Label(bonus_display, text=f"+{game['streak_bonus']}", font=("Courier", 24, "bold"), 
+          fg=NEON_COLORS['neon_magenta'], bg=NEON_COLORS['background_dark']).place(relx=0.5, rely=0.5, anchor="center")
+
+    # Grade Section
     grade_box = Frame(mini_frame, bg=NEON_COLORS['neon_magenta'], relief=RAISED, bd=3, 
-                     width=120, height=70)
-    grade_box.place(relx=0.5, rely=0.56, anchor="center")
+                     width=100, height=60)
+    grade_box.place(relx=0.5, rely=0.62, anchor="center")
     grade_box.pack_propagate(False)
     
-    Label(grade_box, text=grade, font=("Courier", 36, "bold"), 
+    Label(grade_box, text=grade, font=("Courier", 30, "bold"), 
           fg=NEON_COLORS['background_dark'], bg=NEON_COLORS['neon_magenta']).place(relx=0.5, rely=0.51, anchor="center")
 
-    Label(mini_frame, text=msgg, font=("Courier", 14, "bold"), 
-          fg=NEON_COLORS['neon_cyan'], bg=NEON_COLORS['background_dark']).place(relx=0.5, rely=0.66, anchor="center")
+    Label(mini_frame, text=msgg, font=("Courier", 12, "bold"), 
+          fg=NEON_COLORS['neon_cyan'], bg=NEON_COLORS['background_dark']).place(relx=0.5, rely=0.72, anchor="center")
 
     record_frame = Frame(mini_frame, width=400, height=100)
-    record_frame.place(relx=0.5, rely=0.84, anchor="center")
+    record_frame.place(relx=0.5, rely=0.87, anchor="center")
     record_frame.pack_propagate(False)
 
     if 'record_frame' in game['images']:
-        Label(record_frame, image=game['images']['record_frame'],bg='#8C1345', bd=0).place(x=0, y=0, relwidth=1, relheight=1)
+        Label(record_frame, image=game['images']['record_frame'], bg='#8C1345', bd=0).place(x=0, y=0, relwidth=1, relheight=1)
 
     questions_answered = game.get('answered_questions', 0)
     lives_remaining = game.get('lives', 0)
