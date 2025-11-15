@@ -96,7 +96,7 @@ BACKGROUND_PATHS = {
 # Initialize main window and load resources
 def main():
     game['root'] = Tk()                                          # Initialize main Tk window
-    game['root'].title("MATH MADNESS")              # Set window title
+    game['root'].title("MATH MADNESS")                           # Set window title
     game['root'].geometry("800x750")                             # Set fixed window size
     game['root'].resizable(False, False)                         # Disable resizing
     game['root'].configure(bg=NEON_COLORS['background_dark'])    # Set background color
