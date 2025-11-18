@@ -25,6 +25,8 @@ joke = {
     'char_index': 0,                # Current character position in typewriter
     'sounds': {},                   # Dictionary storing loaded audio
     'images': {},                   # Dictionary storing loaded images
+    'joke_started': False,          # Track if first joke has been told
+    'punchline_shown': False,       # Track if punchline is currently displayed
 }
 
 # --- ASSET PATHS ---
@@ -40,11 +42,10 @@ IMAGE_PATHS = {
 
 # Audio file paths
 AUDIO_PATHS = {
-    'bg_music': r"resources\background_music.wav",
-    'btn_click': r"resources\click.wav",
-    'laugh': r"resources\laugh.wav",
-    'drumroll': r"resources\drumroll.wav",
-    'applause': r"resources\applause.wav"
+    'bg_music': (r"C:\Users\fasih\Documents\GitHub\skills-portfolio-Fasih004\Assessment 1 - Skills Portfolio\Exercise 2 - Alexa tell me a Joke\assets\audios\main_bg.wav"),
+    'btn_click': (r"C:\Users\fasih\Documents\GitHub\skills-portfolio-Fasih004\Assessment 1 - Skills Portfolio\Exercise 2 - Alexa tell me a Joke\assets\audios\button.wav"),
+    'laugh': (r"C:\Users\fasih\Documents\GitHub\skills-portfolio-Fasih004\Assessment 1 - Skills Portfolio\Exercise 2 - Alexa tell me a Joke\assets\audios\laughing.wav"),
+    'drumroll': (r"C:\Users\fasih\Documents\GitHub\skills-portfolio-Fasih004\Assessment 1 - Skills Portfolio\Exercise 2 - Alexa tell me a Joke\assets\audios\drumroll.wav"),
 }
 
 # --- AUDIO SETUP ---
@@ -140,8 +141,13 @@ def load_jokes():
         for l in lines:
             if "?" in l:
                 data = l.strip().split("?", 1)
-                setups.append(data[0] + "?")
-                punchlines.append(data[1])
+                setup = data[0] + "?"
+                punchline = data[1].strip()
+                
+                # Only add if both setup and punchline are not empty
+                if setup and punchline:
+                    setups.append(setup)
+                    punchlines.append(punchline)
         
         print(f"Jokes loaded successfully: {len(setups)} jokes")
         
@@ -202,31 +208,31 @@ if joke['images'].get('joke_frame'):
     joke_frame_label = Label(bg_label, image=joke['images']['joke_frame'], bg='#040c21')
     joke_frame_label.place(relx=0.69, rely=0.57, anchor="center")
     
-    # Setup label directly on image
+    # Setup label directly on image 
     setup_label = Label(
         joke_frame_label,
         text="",
-        wraplength=480,
+        wraplength=280,
         font=("Arial", 14, "bold"),
         fg="#000000",
         bg='#6C8DC7',
         justify=CENTER,
-        pady=20
+        pady=10
     )
-    setup_label.place(relx=0.5, rely=0.35, anchor="center")
+    setup_label.place(relx=0.5, rely=0.30, anchor="center", width=300, height=100)
     
-    # Punchline label directly on image
+    # Punchline label directly on image 
     punchline_label = Label(
         joke_frame_label,
         text="",
-        wraplength=480,
+        wraplength=280,
         font=("Arial", 16, "bold"),
         fg="#6b4811",
         bg="#6C8DC7",
         justify=CENTER,
         pady=10
     )
-    punchline_label.place(relx=0.5, rely=0.65, anchor="center")
+    punchline_label.place(relx=0.5, rely=0.70, anchor="center", width=300, height=100)
     
 else:    
     joke_display_container = Frame(bg_label, bg='#6C8DC7', bd=5, relief=RIDGE)
@@ -245,24 +251,30 @@ joke['punchline_label'] = punchline_label
 # --- JOKE LOGIC ---
 # Display random joke setup
 def tell_joke():
-    if joke['setups']:
-        # Select random joke
-        joke['current_index'][0] = random.randint(0, len(joke['setups']) - 1)
-        joke['setup_label'].config(
-            text=joke['setups'][joke['current_index'][0]],
-            font=("Arial", 16, "bold"),
-            fg="#000000"
-        )
-        joke['punchline_label'].config(text="")
-        
-        # Play laugh sound after short delay
-        joke_app.after(300, lambda: trigger_sound('laugh'))
+    # Only work if this is the first time or coming from next_joke
+    if not joke['joke_started']:
+        if joke['setups']:
+            # Select random joke
+            joke['current_index'][0] = random.randint(0, len(joke['setups']) - 1)
+            joke['setup_label'].config(
+                text=joke['setups'][joke['current_index'][0]],
+                font=("Arial", 16, "bold"),
+                fg="#000000"
+            )
+            joke['punchline_label'].config(text="")
+            joke['punchline_shown'] = False
+            joke['joke_started'] = True  # Mark that first joke has been started
+    else:
+        # If already started, inform user to use next button
+        messagebox.showinfo("Info", "Please use 'Next Joke' button for more jokes!")
 
 
 # Show punchline with typewriter effect
 def show_punchline():
     if joke['setup_label'].cget("text") == "":
         messagebox.showwarning("Wait!", "Please click 'Alexa Tell Me a Joke' button first!")
+    elif joke['punchline_shown']:
+        messagebox.showinfo("Info", "Punchline already shown! Click 'Next Joke' for another joke.")
     elif joke['punchlines']:
         # Prepare for typewriter effect
         joke['current_punchline'] = joke['punchlines'][joke['current_index'][0]]
@@ -274,6 +286,7 @@ def show_punchline():
         
         # Start typewriter effect after drumroll
         joke_app.after(2000, type_character)
+        joke['punchline_shown'] = True
 
 
 # Type one character at a time (typewriter effect)
@@ -285,13 +298,38 @@ def type_character():
         joke['char_index'] += 1
         joke['typewriter_job'] = joke_app.after(50, type_character)
     else:
-        # Typewriter complete - play applause
-        trigger_sound('applause')
+        # Typewriter complete - play laugh sound
+        trigger_sound('laugh')
 
 
 # Load next joke
 def next_joke():
-    tell_joke()
+    if not joke['joke_started']:
+        messagebox.showwarning("Wait!", "Please click 'Alexa Tell Me a Joke' button first!")
+        return
+    
+    if joke['setups']:
+        # Get a new random joke that's different from current
+        new_index = random.randint(0, len(joke['setups']) - 1)
+        
+        # Ensure to get a different joke i
+        attempts = 0
+        while new_index == joke['current_index'][0] and len(joke['setups']) > 1 and attempts < 10:
+            new_index = random.randint(0, len(joke['setups']) - 1)
+            attempts += 1
+        
+        joke['current_index'][0] = new_index
+        
+        # Update setup label
+        joke['setup_label'].config(
+            text=joke['setups'][joke['current_index'][0]],
+            font=("Arial", 16, "bold"),
+            fg="#000000"
+        )
+        
+        # Clear punchline
+        joke['punchline_label'].config(text="")
+        joke['punchline_shown'] = False
 
 
 # --- BUTTON CREATION ---
