@@ -8,7 +8,7 @@ import pygame                                   # Audio library
 # --- MAIN WINDOW ---
 joke_app = Tk()
 joke_app.title("Alexa Tell Me A Joke")
-joke_app.geometry("1000x600")
+joke_app.geometry("1000x600") 
 joke_app.resizable(FALSE, FALSE)
 joke_app.config(bg="#1b1b1b")
 joke_app.iconbitmap(r"C:\Users\fasih\Documents\GitHub\skills-portfolio-Fasih004\Assessment 1 - Skills Portfolio\Exercise 2 - Alexa tell me a Joke\assets\ui\Smiley.ico")
