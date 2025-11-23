@@ -129,9 +129,9 @@ class StudentManagerApp:
         self.create_main_content_area(main_container)
 
     def create_sidebar_navigation(self, parent):
-        """Create modern left sidebar with navigation buttons and a logout button."""
+        """left sidebar with navigation buttons and a logout button."""
         # Sidebar frame 
-        sidebar_frame = ctk.CTkFrame(parent, fg_color="#6366f1", width=150, corner_radius=15)
+        sidebar_frame = ctk.CTkFrame(parent, fg_color="#6366f1", width=175, corner_radius=15)
         sidebar_frame.pack(side="left", fill="y", padx=(0, 10))
         sidebar_frame.pack_propagate(False)
 
@@ -155,6 +155,10 @@ class StudentManagerApp:
             ("👤 Student", self.show_individual_student),
             ("🏆 Top Score", self.show_highest_score_student),
             ("📉 Low Score", self.show_lowest_score_student),
+            ("🔄 Sort Records", self.show_sort_records),
+            ("➕ Add Student", self.show_add_student),
+            ("🗑️ Delete Student", self.show_delete_student),
+            ("✏️ Update Student", self.show_update_student),
         ]
 
         self.nav_buttons_list = []
@@ -182,8 +186,8 @@ class StudentManagerApp:
         # Logout button fixed at bottom of sidebar
         logout_btn = ctk.CTkButton(
             sidebar_frame,
-            text="⇥ Log Out",
-            font=("Arial", 13),
+            text="Log Out",
+            font=("Arial", 17),
             fg_color="transparent",
             hover_color="#ef4444",
             text_color="#e0e7ff",
@@ -1191,6 +1195,723 @@ class StudentManagerApp:
         result = messagebox.askyesno("Quit", "Are you sure you want to quit?")
         if result:
             self.root_window.quit()
+
+    def save_to_file(self):
+        """Save all student records back to the file"""
+        file_path = r"C:\Users\fasih\Documents\GitHub\skills-portfolio-Fasih004\Assessment 1 - Skills Portfolio\Student Manager - Extension Problem\studentMarks.txt"
+        
+        try:
+            with open(file_path, 'w') as file:
+                # Write total number of students
+                file.write(f"{len(self.student_data['records'])}\n")
+                
+                # Write each student record
+                for student_id, record in self.student_data['records'].items():
+                    line = f"{record['student_number']},{record['name']},{record['coursework_1']},{record['coursework_2']},{record['coursework_3']},{record['exam_mark']}\n"
+                    file.write(line)
+            
+            return True
+        except Exception as e:
+            messagebox.showerror("Error", f"Failed to save data: {str(e)}")
+            return False
+
+    def show_sort_records(self):
+        """Sort student records view"""
+        self.clear_content_display()
+        self.page_title_label.configure(text="🔄 Sort Student Records")
+        
+        if not self.student_data['records']:
+            ctk.CTkLabel(
+                self.content_display_frame,
+                text="No student records found!",
+                font=("Arial", 16),
+                text_color="#64748b"
+            ).pack(pady=50)
+            return
+        
+        # Sort options frame
+        options_frame = ctk.CTkFrame(self.content_display_frame, fg_color="#f8fafc", corner_radius=15, border_width=2, border_color="#e2e8f0")
+        options_frame.pack(fill="x", pady=(0, 20))
+        
+        ctk.CTkLabel(
+            options_frame,
+            text="Sort Options",
+            font=("Arial", 20, "bold"),
+            text_color="#1e293b"
+        ).pack(pady=15)
+        
+        # Sort criteria
+        criteria_frame = ctk.CTkFrame(options_frame, fg_color="transparent")
+        criteria_frame.pack(pady=10)
+        
+        ctk.CTkLabel(
+            criteria_frame,
+            text="Sort By:",
+            font=("Arial", 14, "bold"),
+            text_color="#1e293b"
+        ).pack(side="left", padx=(20, 10))
+        
+        sort_var = ctk.StringVar(value="percentage")
+        
+        ctk.CTkRadioButton(
+            criteria_frame,
+            text="Percentage",
+            variable=sort_var,
+            value="percentage",
+            font=("Arial", 12),
+            text_color="#1e293b",
+            fg_color="#6366f1"
+        ).pack(side="left", padx=10)
+        
+        ctk.CTkRadioButton(
+            criteria_frame,
+            text="Name",
+            variable=sort_var,
+            value="name",
+            font=("Arial", 12),
+            text_color="#1e293b",
+            fg_color="#6366f1"
+        ).pack(side="left", padx=10)
+        
+        ctk.CTkRadioButton(
+            criteria_frame,
+            text="Student ID",
+            variable=sort_var,
+            value="id",
+            font=("Arial", 12),
+            text_color="#1e293b",
+            fg_color="#6366f1"
+        ).pack(side="left", padx=10)
+        
+        # Order frame
+        order_frame = ctk.CTkFrame(options_frame, fg_color="transparent")
+        order_frame.pack(pady=10)
+        
+        ctk.CTkLabel(
+            order_frame,
+            text="Order:",
+            font=("Arial", 14, "bold"),
+            text_color="#1e293b"
+        ).pack(side="left", padx=(20, 10))
+        
+        order_var = ctk.StringVar(value="desc")
+        
+        ctk.CTkRadioButton(
+            order_frame,
+            text="Ascending",
+            variable=order_var,
+            value="asc",
+            font=("Arial", 12),
+            text_color="#1e293b",
+            fg_color="#6366f1"
+        ).pack(side="left", padx=10)
+        
+        ctk.CTkRadioButton(
+            order_frame,
+            text="Descending",
+            variable=order_var,
+            value="desc",
+            font=("Arial", 12),
+            text_color="#1e293b",
+            fg_color="#6366f1"
+        ).pack(side="left", padx=10)
+        
+        # Results frame
+        results_frame = ctk.CTkScrollableFrame(self.content_display_frame, fg_color="transparent")
+        results_frame.pack(fill="both", expand=True)
+        
+        def perform_sort():
+            for widget in results_frame.winfo_children():
+                widget.destroy()
+            
+            # Get all students with stats
+            students_list = []
+            for student_id, record in self.student_data['records'].items():
+                stats = self.calculate_student_statistics(record)
+                students_list.append((record, stats))
+            
+            # Sort based on criteria
+            if sort_var.get() == "percentage":
+                students_list.sort(key=lambda x: x[1]['percentage'], reverse=(order_var.get() == "desc"))
+            elif sort_var.get() == "name":
+                students_list.sort(key=lambda x: x[0]['name'], reverse=(order_var.get() == "desc"))
+            else:  # id
+                students_list.sort(key=lambda x: x[0]['student_number'], reverse=(order_var.get() == "desc"))
+            
+            # Display sorted results
+            grade_colors = {
+                'A': "#10b981",
+                'B': "#3b82f6",
+                'C': "#f59e0b",
+                'D': "#f97316",
+                'F': "#ef4444"
+            }
+            
+            for idx, (record, stats) in enumerate(students_list):
+                card = ctk.CTkFrame(results_frame, fg_color="#f8fafc", corner_radius=10, height=100, border_width=2, border_color="#e2e8f0")
+                card.pack(fill="x", pady=5)
+                card.pack_propagate(False)
+                
+                # Rank badge
+                rank_badge = ctk.CTkFrame(card, fg_color="#6366f1", corner_radius=8, width=50, height=50)
+                rank_badge.place(relx=0.02, rely=0.5, anchor="w")
+                rank_badge.pack_propagate(False)
+                
+                ctk.CTkLabel(
+                    rank_badge,
+                    text=f"#{idx+1}",
+                    font=("Arial", 14, "bold"),
+                    text_color="#ffffff"
+                ).place(relx=0.5, rely=0.5, anchor="center")
+                
+                # Student info
+                info_frame = ctk.CTkFrame(card, fg_color="transparent")
+                info_frame.place(relx=0.12, rely=0.3, anchor="w")
+                
+                ctk.CTkLabel(
+                    info_frame,
+                    text=record['name'],
+                    font=("Arial", 14, "bold"),
+                    text_color="#1e293b"
+                ).pack(anchor="w")
+                
+                ctk.CTkLabel(
+                    info_frame,
+                    text=f"ID: {record['student_number']}",
+                    font=("Arial", 11),
+                    text_color="#64748b"
+                ).pack(anchor="w")
+                
+                # Stats on right
+                stats_frame = ctk.CTkFrame(card, fg_color="transparent")
+                stats_frame.place(relx=0.98, rely=0.5, anchor="e")
+                
+                ctk.CTkLabel(
+                    stats_frame,
+                    text=f"{stats['percentage']:.1f}%",
+                    font=("Arial", 20, "bold"),
+                    text_color=grade_colors[stats['grade']]
+                ).pack(side="left", padx=10)
+                
+                grade_badge = ctk.CTkFrame(stats_frame, fg_color=grade_colors[stats['grade']], corner_radius=8, width=40, height=40)
+                grade_badge.pack(side="left", padx=(0, 10))
+                grade_badge.pack_propagate(False)
+                
+                ctk.CTkLabel(
+                    grade_badge,
+                    text=stats['grade'],
+                    font=("Arial", 16, "bold"),
+                    text_color="#ffffff"
+                ).place(relx=0.5, rely=0.5, anchor="center")
+        
+        # Sort button
+        ctk.CTkButton(
+            options_frame,
+            text="🔄 Apply Sort",
+            font=("Arial", 14, "bold"),
+            fg_color="#6366f1",
+            hover_color="#4f46e5",
+            corner_radius=10,
+            width=150,
+            height=40,
+            command=perform_sort
+        ).pack(pady=15)
+        
+        # Initial sort
+        perform_sort()
+
+    def show_add_student(self):
+        """Add new student view"""
+        self.clear_content_display()
+        self.page_title_label.configure(text="➕ Add New Student")
+        
+        # Form frame
+        form_frame = ctk.CTkFrame(self.content_display_frame, fg_color="#f8fafc", corner_radius=15, border_width=2, border_color="#e2e8f0")
+        form_frame.pack(fill="both", expand=True, padx=50, pady=20)
+        
+        ctk.CTkLabel(
+            form_frame,
+            text="Student Information Form",
+            font=("Arial", 22, "bold"),
+            text_color="#1e293b"
+        ).pack(pady=20)
+        
+        # Entry fields
+        fields_frame = ctk.CTkFrame(form_frame, fg_color="transparent")
+        fields_frame.pack(pady=20, padx=40, fill="x")
+        
+        entries = {}
+        fields = [
+            ("Student ID", "student_id"),
+            ("Full Name", "name"),
+            ("Coursework 1 (out of 20)", "cw1"),
+            ("Coursework 2 (out of 20)", "cw2"),
+            ("Coursework 3 (out of 20)", "cw3"),
+            ("Exam Mark (out of 100)", "exam")
+        ]
+        
+        for label, key in fields:
+            field_container = ctk.CTkFrame(fields_frame, fg_color="transparent")
+            field_container.pack(fill="x", pady=10)
+            
+            ctk.CTkLabel(
+                field_container,
+                text=label,
+                font=("Arial", 13, "bold"),
+                text_color="#1e293b",
+                width=200,
+                anchor="w"
+            ).pack(side="left")
+            
+            entry = ctk.CTkEntry(
+                field_container,
+                font=("Arial", 13),
+                width=300,
+                height=40,
+                corner_radius=8,
+                border_width=2,
+                border_color="#e2e8f0"
+            )
+            entry.pack(side="left", padx=20)
+            entries[key] = entry
+        
+        # Status label
+        status_label = ctk.CTkLabel(
+            form_frame,
+            text="",
+            font=("Arial", 12),
+            text_color="#ef4444"
+        )
+        status_label.pack(pady=10)
+        
+        def add_student():
+            # Validate inputs
+            student_id = entries['student_id'].get().strip()
+            name = entries['name'].get().strip()
+            
+            if not student_id or not name:
+                status_label.configure(text="❌ Please fill in all fields", text_color="#ef4444")
+                return
+            
+            if student_id in self.student_data['records']:
+                status_label.configure(text="❌ Student ID already exists!", text_color="#ef4444")
+                return
+            
+            try:
+                cw1 = int(entries['cw1'].get().strip())
+                cw2 = int(entries['cw2'].get().strip())
+                cw3 = int(entries['cw3'].get().strip())
+                exam = int(entries['exam'].get().strip())
+                
+                if not (0 <= cw1 <= 20 and 0 <= cw2 <= 20 and 0 <= cw3 <= 20):
+                    status_label.configure(text="❌ Coursework marks must be between 0-20", text_color="#ef4444")
+                    return
+                
+                if not (0 <= exam <= 100):
+                    status_label.configure(text="❌ Exam mark must be between 0-100", text_color="#ef4444")
+                    return
+                
+            except ValueError:
+                status_label.configure(text="❌ Please enter valid numbers for marks", text_color="#ef4444")
+                return
+            
+            # Add to records
+            self.student_data['records'][student_id] = {
+                'name': name,
+                'student_number': student_id,
+                'coursework_1': cw1,
+                'coursework_2': cw2,
+                'coursework_3': cw3,
+                'exam_mark': exam
+            }
+            
+            # Save to file
+            if self.save_to_file():
+                status_label.configure(text="✅ Student added successfully!", text_color="#10b981")
+                
+                # Clear entries
+                for entry in entries.values():
+                    entry.delete(0, 'end')
+                
+                # Show success message
+                messagebox.showinfo("Success", f"Student {name} has been added successfully!")
+            else:
+                status_label.configure(text="❌ Failed to save to file", text_color="#ef4444")
+        
+        # Buttons frame
+        buttons_frame = ctk.CTkFrame(form_frame, fg_color="transparent")
+        buttons_frame.pack(pady=20)
+        
+        ctk.CTkButton(
+            buttons_frame,
+            text="➕ Add Student",
+            font=("Arial", 14, "bold"),
+            fg_color="#10b981",
+            hover_color="#059669",
+            corner_radius=10,
+            width=150,
+            height=45,
+            command=add_student
+        ).pack(side="left", padx=10)
+        
+        ctk.CTkButton(
+            buttons_frame,
+            text="🔄 Clear Form",
+            font=("Arial", 14, "bold"),
+            fg_color="#64748b",
+            hover_color="#475569",
+            corner_radius=10,
+            width=150,
+            height=45,
+            command=lambda: [entry.delete(0, 'end') for entry in entries.values()]
+        ).pack(side="left", padx=10)
+
+    def show_delete_student(self):
+        """Delete student view"""
+        self.clear_content_display()
+        self.page_title_label.configure(text="🗑️ Delete Student Record")
+        
+        if not self.student_data['records']:
+            ctk.CTkLabel(
+                self.content_display_frame,
+                text="No student records found!",
+                font=("Arial", 16),
+                text_color="#64748b"
+            ).pack(pady=50)
+            return
+        
+        # Search frame
+        search_frame = ctk.CTkFrame(self.content_display_frame, fg_color="#f8fafc", corner_radius=15, border_width=2, border_color="#e2e8f0", height=120)
+        search_frame.pack(fill="x", pady=(0, 20))
+        search_frame.pack_propagate(False)
+        
+        ctk.CTkLabel(
+            search_frame,
+            text="Search Student to Delete",
+            font=("Arial", 18, "bold"),
+            text_color="#1e293b"
+        ).pack(pady=15)
+        
+        search_container = ctk.CTkFrame(search_frame, fg_color="transparent")
+        search_container.pack()
+        
+        search_entry = ctk.CTkEntry(
+            search_container,
+            placeholder_text="Enter Student ID or Name",
+            font=("Arial", 13),
+            width=400,
+            height=40,
+            corner_radius=8,
+            border_width=2,
+            border_color="#e2e8f0"
+        )
+        search_entry.pack(side="left", padx=10)
+        
+        # Results frame
+        results_frame = ctk.CTkScrollableFrame(self.content_display_frame, fg_color="transparent")
+        results_frame.pack(fill="both", expand=True)
+        
+        def search_students():
+            for widget in results_frame.winfo_children():
+                widget.destroy()
+            
+            search_term = search_entry.get().strip().lower()
+            
+            if not search_term:
+                # Show all students
+                matching_students = list(self.student_data['records'].items())
+            else:
+                matching_students = [
+                    (sid, record) for sid, record in self.student_data['records'].items()
+                    if search_term in sid.lower() or search_term in record['name'].lower()
+                ]
+            
+            if not matching_students:
+                ctk.CTkLabel(
+                    results_frame,
+                    text="No matching students found",
+                    font=("Arial", 14),
+                    text_color="#64748b"
+                ).pack(pady=30)
+                return
+            
+            for student_id, record in matching_students:
+                stats = self.calculate_student_statistics(record)
+                
+                card = ctk.CTkFrame(results_frame, fg_color="#f8fafc", corner_radius=10, height=100, border_width=2, border_color="#e2e8f0")
+                card.pack(fill="x", pady=5)
+                card.pack_propagate(False)
+                
+                # Student info
+                info_frame = ctk.CTkFrame(card, fg_color="transparent")
+                info_frame.place(relx=0.02, rely=0.5, anchor="w")
+                
+                ctk.CTkLabel(
+                    info_frame,
+                    text=record['name'],
+                    font=("Arial", 14, "bold"),
+                    text_color="#1e293b"
+                ).pack(anchor="w", padx=10)
+                
+                ctk.CTkLabel(
+                    info_frame,
+                    text=f"ID: {record['student_number']} | Score: {stats['percentage']:.1f}% | Grade: {stats['grade']}",
+                    font=("Arial", 11),
+                    text_color="#64748b"
+                ).pack(anchor="w", padx=10)
+                
+                # Delete button
+                def delete_student(sid=student_id, sname=record['name']):
+                    result = messagebox.askyesno(
+                        "Confirm Delete",
+                        f"Are you sure you want to delete {sname}?\n\nThis action cannot be undone!"
+                    )
+                    
+                    if result:
+                        del self.student_data['records'][sid]
+                        if self.save_to_file():
+                            messagebox.showinfo("Success", f"Student {sname} has been deleted successfully!")
+                            search_students()  # Refresh list
+                        else:
+                            messagebox.showerror("Error", "Failed to save changes to file")
+                
+                ctk.CTkButton(
+                    card,
+                    text="🗑️ Delete",
+                    font=("Arial", 12, "bold"),
+                    fg_color="#ef4444",
+                    hover_color="#dc2626",
+                    corner_radius=8,
+                    width=100,
+                    height=35,
+                    command=delete_student
+                ).place(relx=0.98, rely=0.5, anchor="e")
+        
+        ctk.CTkButton(
+            search_container,
+            text="🔍 Search",
+            font=("Arial", 13, "bold"),
+            fg_color="#6366f1",
+            hover_color="#4f46e5",
+            corner_radius=8,
+            width=100,
+            height=40,
+            command=search_students
+        ).pack(side="left", padx=5)
+        
+        # Initial display
+        search_students()
+
+    def show_update_student(self):
+        """Update student view"""
+        self.clear_content_display()
+        self.page_title_label.configure(text="✏️ Update Student Record")
+        
+        if not self.student_data['records']:
+            ctk.CTkLabel(
+                self.content_display_frame,
+                text="No student records found!",
+                font=("Arial", 16),
+                text_color="#64748b"
+            ).pack(pady=50)
+            return
+        
+        # Student selection
+        selection_frame = ctk.CTkFrame(self.content_display_frame, fg_color="#f8fafc", corner_radius=15, border_width=2, border_color="#e2e8f0", height=120)
+        selection_frame.pack(fill="x", pady=(0, 20))
+        selection_frame.pack_propagate(False)
+        
+        ctk.CTkLabel(
+            selection_frame,
+            text="Select Student to Update",
+            font=("Arial", 18, "bold"),
+            text_color="#1e293b"
+        ).pack(pady=15)
+        
+        student_names = [f"{record['name']} ({sid})" for sid, record in self.student_data['records'].items()]
+        
+        student_dropdown = ctk.CTkComboBox(
+            selection_frame,
+            values=student_names,
+            font=("Arial", 13),
+            width=400,
+            height=40,
+            corner_radius=8,
+            border_width=2,
+            border_color="#e2e8f0"
+        )
+        student_dropdown.set(student_names[0] if student_names else "")
+        student_dropdown.pack()
+        
+        # Update form frame
+        form_frame = ctk.CTkScrollableFrame(self.content_display_frame, fg_color="transparent")
+        form_frame.pack(fill="both", expand=True)
+        
+        def load_student_data():
+            for widget in form_frame.winfo_children():
+                widget.destroy()
+            
+            selected = student_dropdown.get()
+            if not selected:
+                return
+            
+            student_id = selected.split('(')[-1].strip(')')
+            record = self.student_data['records'][student_id]
+            stats = self.calculate_student_statistics(record)
+            
+            # Info card
+            info_card = ctk.CTkFrame(form_frame, fg_color="#f8fafc", corner_radius=15, border_width=2, border_color="#e2e8f0")
+            info_card.pack(fill="x", pady=(0, 20))
+            
+            ctk.CTkLabel(
+                info_card,
+                text=f"Current Stats: {stats['percentage']:.1f}% | Grade: {stats['grade']}",
+                font=("Arial", 16, "bold"),
+                text_color="#6366f1"
+            ).pack(pady=15)
+            
+            # Edit form
+            edit_frame = ctk.CTkFrame(form_frame, fg_color="#f8fafc", corner_radius=15, border_width=2, border_color="#e2e8f0")
+            edit_frame.pack(fill="both", expand=True)
+            
+            ctk.CTkLabel(
+                edit_frame,
+                text="Update Information",
+                font=("Arial", 18, "bold"),
+                text_color="#1e293b"
+            ).pack(pady=20)
+            
+            fields_container = ctk.CTkFrame(edit_frame, fg_color="transparent")
+            fields_container.pack(pady=20, padx=40, fill="x")
+            
+            entries = {}
+            fields = [
+                ("Student Name", "name", record['name']),
+                ("Coursework 1 (0-20)", "cw1", str(record['coursework_1'])),
+                ("Coursework 2 (0-20)", "cw2", str(record['coursework_2'])),
+                ("Coursework 3 (0-20)", "cw3", str(record['coursework_3'])),
+                ("Exam Mark (0-100)", "exam", str(record['exam_mark']))
+            ]
+            
+            for label, key, default_val in fields:
+                field_frame = ctk.CTkFrame(fields_container, fg_color="transparent")
+                field_frame.pack(fill="x", pady=10)
+                
+                ctk.CTkLabel(
+                    field_frame,
+                    text=label,
+                    font=("Arial", 13, "bold"),
+                    text_color="#1e293b",
+                    width=200,
+                    anchor="w"
+                ).pack(side="left")
+                
+                entry = ctk.CTkEntry(
+                    field_frame,
+                    font=("Arial", 13),
+                    width=300,
+                    height=40,
+                    corner_radius=8,
+                    border_width=2,
+                    border_color="#e2e8f0"
+                )
+                entry.insert(0, default_val)
+                entry.pack(side="left", padx=20)
+                entries[key] = entry
+            
+            status_label = ctk.CTkLabel(
+                edit_frame,
+                text="",
+                font=("Arial", 12)
+            )
+            status_label.pack(pady=10)
+            
+            def update_student():
+                try:
+                    new_name = entries['name'].get().strip()
+                    cw1 = int(entries['cw1'].get().strip())
+                    cw2 = int(entries['cw2'].get().strip())
+                    cw3 = int(entries['cw3'].get().strip())
+                    exam = int(entries['exam'].get().strip())
+                    
+                    if not new_name:
+                        status_label.configure(text="❌ Name cannot be empty", text_color="#ef4444")
+                        return
+                    
+                    if not (0 <= cw1 <= 20 and 0 <= cw2 <= 20 and 0 <= cw3 <= 20):
+                        status_label.configure(text="❌ Coursework marks must be between 0-20", text_color="#ef4444")
+                        return
+                    
+                    if not (0 <= exam <= 100):
+                        status_label.configure(text="❌ Exam mark must be between 0-100", text_color="#ef4444")
+                        return
+                    
+                    # Update record
+                    self.student_data['records'][student_id] = {
+                        'name': new_name,
+                        'student_number': student_id,
+                        'coursework_1': cw1,
+                        'coursework_2': cw2,
+                        'coursework_3': cw3,
+                        'exam_mark': exam
+                    }
+                    
+                    if self.save_to_file():
+                        status_label.configure(text="✅ Student updated successfully!", text_color="#10b981")
+                        messagebox.showinfo("Success", f"Student {new_name} has been updated successfully!")
+                        
+                        # Refresh dropdown
+                        student_names = [f"{r['name']} ({sid})" for sid, r in self.student_data['records'].items()]
+                        student_dropdown.configure(values=student_names)
+                        
+                        load_student_data()
+                    else:
+                        status_label.configure(text="❌ Failed to save to file", text_color="#ef4444")
+                
+                except ValueError:
+                    status_label.configure(text="❌ Please enter valid numbers for marks", text_color="#ef4444")
+            
+            buttons_frame = ctk.CTkFrame(edit_frame, fg_color="transparent")
+            buttons_frame.pack(pady=20)
+            
+            ctk.CTkButton(
+                buttons_frame,
+                text="✅ Save Changes",
+                font=("Arial", 14, "bold"),
+                fg_color="#10b981",
+                hover_color="#059669",
+                corner_radius=10,
+                width=150,
+                height=45,
+                command=update_student
+            ).pack(side="left", padx=10)
+            
+            ctk.CTkButton(
+                buttons_frame,
+                text="🔄 Reset",
+                font=("Arial", 14, "bold"),
+                fg_color="#64748b",
+                hover_color="#475569",
+                corner_radius=10,
+                width=150,
+                height=45,
+                command=load_student_data
+            ).pack(side="left", padx=10)
+        
+        ctk.CTkButton(
+            selection_frame,
+            text="📝 Load Student",
+            font=("Arial", 13, "bold"),
+            fg_color="#6366f1",
+            hover_color="#4f46e5",
+            corner_radius=8,
+            width=120,
+            height=40,
+            command=load_student_data
+        ).pack(pady=(5, 15))
+        
+        # Initial load
+        load_student_data()
 
 
 # --- MAIN FUNCTION ---
