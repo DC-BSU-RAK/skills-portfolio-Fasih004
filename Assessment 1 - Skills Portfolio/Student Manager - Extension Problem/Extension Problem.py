@@ -1317,7 +1317,7 @@ class StudentManagerApp:
         ).pack(side="left", padx=10)
         
         # Results frame
-        results_frame = ctk.CTkScrollableFrame(self.content_display_frame, fg_color="transparent")
+        results_frame = ctk.CTkScrollableFrame(self.content_display_frame,height=500, fg_color="transparent")
         results_frame.pack(fill="both", expand=True)
         
         def perform_sort():
@@ -1608,7 +1608,7 @@ class StudentManagerApp:
         search_entry.pack(side="left", padx=10)
         
         # Results frame
-        results_frame = ctk.CTkScrollableFrame(self.content_display_frame, fg_color="transparent")
+        results_frame = ctk.CTkScrollableFrame(self.content_display_frame, height=500 ,fg_color="transparent")
         results_frame.pack(fill="both", expand=True)
         
         def search_students():
@@ -1717,7 +1717,7 @@ class StudentManagerApp:
             return
         
         # Student selection
-        selection_frame = ctk.CTkFrame(self.content_display_frame, fg_color="#f8fafc", corner_radius=15, border_width=2, border_color="#e2e8f0", height=120)
+        selection_frame = ctk.CTkFrame(self.content_display_frame, fg_color="#f8fafc", corner_radius=15, border_width=2, border_color="#e2e8f0", height=150)
         selection_frame.pack(fill="x", pady=(0, 20))
         selection_frame.pack_propagate(False)
         
@@ -1744,7 +1744,7 @@ class StudentManagerApp:
         student_dropdown.pack()
         
         # Update form frame
-        form_frame = ctk.CTkScrollableFrame(self.content_display_frame, fg_color="transparent")
+        form_frame = ctk.CTkScrollableFrame(self.content_display_frame,height=500, fg_color="transparent")
         form_frame.pack(fill="both", expand=True)
         
         def load_student_data():
